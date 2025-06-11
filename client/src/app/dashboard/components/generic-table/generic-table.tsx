@@ -41,11 +41,11 @@ export default function GenericTable<T>({
 		[onSearch]
 	);
 
-	// useEffect(() => {
-	// 	return () => {
-	// 		if (debounceTimeoutId.current) clearTimeout(debounceTimeoutId.current);
-	// 	};
-	// }, [debounceTimeoutId]);
+	useEffect(() => {
+		return () => {
+			if (debounceTimeoutId.current) clearTimeout(debounceTimeoutId.current);
+		};
+	}, [debounceTimeoutId]);
 
 	const emptyTable = (
 		<div className={styles.emptyTable}>

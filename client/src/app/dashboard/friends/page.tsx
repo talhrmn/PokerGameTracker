@@ -26,45 +26,65 @@ export default function Friends() {
 
 		const searchFriendMutation = useSearchFriend();
 
-		const friendActions = (
-			tabName: string,
-			friend_id: string,
-			fromSearch: boolean = false
-		) => (
-			<div className={styles.center}>
-				{tabName !== FRIENDS_TABS.friendInvites.key ? (
-					<Trash2 onClick={() => removeFriend(friend_id)}>Delete</Trash2>
-				) : (
-					<>
-						{!fromSearch ? (
-							<>
-								<Check onClick={() => addFriend(friend_id)}>Add</Check>
-								<X>Decline</X>
-							</>
-						) : (
-							<MailPlus onClick={() => addFriend(friend_id)}>I</MailPlus>
-						)}
-					</>
-				)}
-			</div>
+		// const addFriendMutation = useAddFriend();
+		// const removeFriendMutation = useRemoveFriend();
+
+		const onSearch = (input: string) => setSearchTerm(input);
+		const addFriend = useCallback(
+			async (friend_id: string) => {
+				console.log("friend_id", friend_id);
+				// addFriendMutation.mutate(friend_id);
+			},
+			// [addFriendMutation]
+			[]
+		);
+		const removeFriend = useCallback(
+			async (friend_id: string) => {
+				console.log("friend_id", friend_id);
+				// removeFriendMutation.mutate(friend_id);
+			},
+			// [removeFriendMutation]
+			[]
 		);
 
-		// useEffect(() => {
-		// 	const fetchSearchResults = async () => {
-		// 		if (activeTab === "friendInvites" && searchTerm) {
-		// 			const newFriends = await searchFriendMutation.mutateAsync(searchTerm);
-		// 			const mappedFriends = newFriends.map((item: FriendsProps) => {
-		// 				return {
-		// 					...item,
-		// 					actions: friendActions(activeTab, item._id, true),
-		// 				};
-		// 			});
-		// 			setSearchedFriends(mappedFriends);
-		// 		} else setSearchedFriends([]);
-		// 	};
+		const friendActions = useCallback(
+			(tabName: string, friend_id: string, fromSearch: boolean = false) => (
+				<div className={styles.center}>
+					{tabName !== FRIENDS_TABS.friendInvites.key ? (
+						<Trash2 onClick={() => removeFriend(friend_id)}>Delete</Trash2>
+					) : (
+						<>
+							{!fromSearch ? (
+								<>
+									<Check onClick={() => addFriend(friend_id)}>Add</Check>
+									<X>Decline</X>
+								</>
+							) : (
+								<MailPlus onClick={() => addFriend(friend_id)}>I</MailPlus>
+							)}
+						</>
+					)}
+				</div>
+			),
+			[removeFriend, addFriend]
+		);
 
-		// 	fetchSearchResults();
-		// }, [searchTerm, activeTab, friendActions, searchFriendMutation]);
+		useEffect(() => {
+			const fetchSearchResults = async () => {
+				if (activeTab === "friendInvites" && searchTerm) {
+					const newFriends = await searchFriendMutation.mutateAsync(searchTerm);
+					const mappedFriends = newFriends.map((item: FriendsProps) => {
+						return {
+							...item,
+							actions: friendActions(activeTab, item._id, true),
+						};
+					});
+					setSearchedFriends(mappedFriends);
+				} else setSearchedFriends([]);
+			};
+
+			fetchSearchResults();
+		}, [searchTerm, activeTab, friendActions, searchFriendMutation]);
 
 		const friendsList = useMemo(() => {
 			if (!data) return [] as FriendsProps[];
@@ -86,29 +106,6 @@ export default function Friends() {
 
 			return friendsData.concat(searchedFriends);
 		}, [data, activeTab, searchTerm, searchedFriends, friendActions]);
-
-		// const addFriendMutation = useAddFriend();
-		// const removeFriendMutation = useRemoveFriend();
-
-		const onSearch = (input: string) => setSearchTerm(input);
-
-		const removeFriend = useCallback(
-			async (friend_id: string) => {
-				console.log("friend_id", friend_id);
-				// removeFriendMutation.mutate(friend_id);
-			},
-			// [removeFriendMutation]
-			[]
-		);
-
-		const addFriend = useCallback(
-			async (friend_id: string) => {
-				console.log("friend_id", friend_id);
-				// addFriendMutation.mutate(friend_id);
-			},
-			// [addFriendMutation]
-			[]
-		);
 
 		// const deleteButton = (
 		//   <Trash2 onClick={(e) => removeFriend(e)}>Delete</Trash2>

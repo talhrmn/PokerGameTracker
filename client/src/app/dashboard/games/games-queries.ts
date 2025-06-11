@@ -1,4 +1,3 @@
-import { api } from "@/app/clients/api-client";
 import { gamesApiClient } from "@/app/clients/games-api-client";
 import { GameProps } from "@/app/dashboard/games/types";
 import { useQuery } from "@tanstack/react-query";
