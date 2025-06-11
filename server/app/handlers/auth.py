@@ -2,12 +2,12 @@ from datetime import timedelta
 
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from server.app.core.config import settings
-from server.app.core.security import create_access_token
-from server.app.handlers.users import user_handler
-from server.app.schemas.auth import LoginResponse
-from server.app.schemas.py_object_id import PyObjectId
-from server.app.schemas.user import UserDBResponse
+from app.core.config import settings
+from app.core.security import create_access_token
+from app.handlers.users import user_handler
+from app.schemas.auth import LoginResponse
+from app.schemas.py_object_id import PyObjectId
+from app.schemas.user import UserDBResponse
 
 
 class AuthHandler:

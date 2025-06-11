@@ -8,6 +8,10 @@ class TablesApiClient {
     async getTable(tableId: string): Promise<Table> {
         return api.getData<Table>(`/tables/${tableId}`)
     }
+    
+    async getTables(): Promise<Table[]> {
+        return api.getData<Table[]>("/tables")
+    }
 
     async createTable(params: TableForm): Promise<Table> {
         return api.postData<TableForm, Table>("/tables/create", params)

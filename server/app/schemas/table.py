@@ -4,8 +4,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
-from server.app.schemas.game import GameStatusEnum
-from server.app.schemas.py_object_id import PyObjectId
+from app.schemas.game import GameStatusEnum
+from app.schemas.py_object_id import PyObjectId
 
 
 class PlayerStatusEnum(str, Enum):

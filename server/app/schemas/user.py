@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field, EmailStr
 
-from server.app.schemas.py_object_id import PyObjectId
+from app.schemas.py_object_id import PyObjectId
 
 
 class UserStats(BaseModel):

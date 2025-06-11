@@ -26,7 +26,7 @@ export interface GamePlayerProps {
 }
 
 export interface GameProps {
-  id: string;
+  _id: string;
   table_id: string;
   creator_id: string;
   status: GameStatusEnum;

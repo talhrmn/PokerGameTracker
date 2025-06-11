@@ -3,7 +3,7 @@ from typing import List
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from server.app.schemas.user import UserResponse, MonthlyStats
+from app.schemas.user import UserResponse, MonthlyStats
 
 
 class StatisticsHandler:

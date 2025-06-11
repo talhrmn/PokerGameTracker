@@ -1,7 +1,7 @@
 from datetime import datetime, UTC, timedelta
 
-from server.app.schemas.dash_stats import MonthlyChangesStats
-from server.app.schemas.user import UserDBResponse, MonthlyStats
+from app.schemas.dash_stats import MonthlyChangesStats
+from app.schemas.user import UserDBResponse, MonthlyStats
 
 
 class DashStatsHandler:

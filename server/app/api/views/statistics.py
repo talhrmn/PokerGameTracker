@@ -3,9 +3,9 @@ from typing import List
 from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from server.app.api.dependencies import get_database, get_current_user
-from server.app.handlers.statistics import statistics_handler
-from server.app.schemas.user import UserResponse, MonthlyStats
+from app.api.dependencies import get_database, get_current_user
+from app.handlers.statistics import statistics_handler
+from app.schemas.user import UserResponse, MonthlyStats
 
 router = APIRouter()
 

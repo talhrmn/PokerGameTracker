@@ -4,10 +4,10 @@ from jose import jwt, JWTError
 from motor.motor_asyncio import AsyncIOMotorClient
 from starlette import status
 
-from server.app.core.config import settings
-from server.app.core.security import oauth2_scheme
-from server.app.db.mongo_client import MongoDB
-from server.app.schemas.user import UserResponse
+from app.core.config import settings
+from app.core.security import oauth2_scheme
+from app.db.mongo_client import MongoDB
+from app.schemas.user import UserResponse
 
 
 def get_database():

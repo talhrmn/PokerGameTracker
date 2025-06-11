@@ -110,18 +110,19 @@ const TrendingsPage = () => {
 			</div>
 
 			<div className={styles.chartsGrid}>
-				{lineChartData.map((item, index) => (
-					<div key={index} className={styles.chartWrapper}>
-						<LineChart
-							label={item.label}
-							colors={item.colors}
-							xAxisLable={item.xAxisLable}
-							yAxisLable={item.yAxisLable}
-							renderTooltip={item.renderTooltip}
-							data={item.data}
-						/>
-					</div>
-				))}
+				{lineChartData &&
+					lineChartData.map((item, index) => (
+						<div key={index} className={styles.chartWrapper}>
+							<LineChart
+								label={item.label}
+								colors={item.colors}
+								xAxisLable={item.xAxisLable}
+								yAxisLable={item.yAxisLable}
+								renderTooltip={item.renderTooltip}
+								data={item.data}
+							/>
+						</div>
+					))}
 			</div>
 		</div>
 	);

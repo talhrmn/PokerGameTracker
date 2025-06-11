@@ -2,12 +2,12 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from server.app.api.dependencies import get_database
-from server.app.core.security import verify_password
-from server.app.handlers.auth import auth_handler
-from server.app.handlers.users import user_handler
-from server.app.schemas.auth import LoginResponse
-from server.app.schemas.user import UserCreate
+from app.api.dependencies import get_database
+from app.core.security import verify_password
+from app.handlers.auth import auth_handler
+from app.handlers.users import user_handler
+from app.schemas.auth import LoginResponse
+from app.schemas.user import UserCreate
 
 router = APIRouter()
 

@@ -4,13 +4,13 @@ from bson import ObjectId
 from fastapi import APIRouter, HTTPException, Depends, status, Body
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from server.app.api.dependencies import get_current_user, get_database
-from server.app.handlers.games import game_handler
-from server.app.handlers.sse import sse_handler
-from server.app.handlers.tables import table_handler
-from server.app.schemas.game import GameStatusEnum
-from server.app.schemas.table import TableUpdate, TableBase, PlayerStatusEnum, TableDBResponse, PlayerStatus
-from server.app.schemas.user import UserResponse
+from app.api.dependencies import get_current_user, get_database
+from app.handlers.games import game_handler
+from app.handlers.sse import sse_handler
+from app.handlers.tables import table_handler
+from app.schemas.game import GameStatusEnum
+from app.schemas.table import TableUpdate, TableBase, PlayerStatusEnum, TableDBResponse, PlayerStatus
+from app.schemas.user import UserResponse
 
 router = APIRouter()
 
@@ -21,7 +21,7 @@ async def create_table(table: TableBase, current_user: UserResponse = Depends(ge
     try:
         table_id = await table_handler.create_table(table=table, current_user=current_user, db_client=db_client)
         updated_table = await table_handler.get_table_by_id(table_id=table_id, db_client=db_client)
-        await sse_handler.send_table_update(table_id=str(updated_table.id), data=updated_table)
+        # await sse_handler.send_table_update(table_id=str(updated_table.id), data=updated_table)
         return updated_table
     except Exception as e:
         raise HTTPException(
@@ -84,7 +84,7 @@ async def update_table(
         await table_handler.update_table(table_id=table_id, update_data=update_data, db_client=db_client)
 
         updated_table = await table_handler.get_table_by_id(table_id=table_id, db_client=db_client)
-        await sse_handler.send_table_update(table_id=table_id, data=updated_table)
+        # await sse_handler.send_table_update(table_id=table_id, data=updated_table)
         return updated_table
     except Exception as e:
         raise HTTPException(
@@ -108,7 +108,7 @@ async def delete_table(table_id: str, current_user: UserResponse = Depends(get_c
     try:
         await table_handler.delete_table(table_id=table_id, db_client=db_client)
         updated_table = await table_handler.get_table_by_id(table_id=table_id, db_client=db_client)
-        await sse_handler.send_table_update(table_id=table_id, data=updated_table)
+        # await sse_handler.send_table_update(table_id=table_id, data=updated_table)
         return updated_table
     except Exception as e:
         raise HTTPException(
@@ -144,7 +144,7 @@ async def invite_user(
     update_data = {"players": table_players}
     await table_handler.update_table(table_id=table_id, update_data=update_data, db_client=db_client)
     updated_table = await table_handler.get_table_by_id(table_id=table_id, db_client=db_client)
-    await sse_handler.send_table_update(table_id=table_id, data=updated_table)
+    # await sse_handler.send_table_update(table_id=table_id, data=updated_table)
     return updated_table
 
 
@@ -174,5 +174,5 @@ async def respond_to_invite(
                                               db_client=db_client)
 
     updated_table = await table_handler.get_table_by_id(table_id=table_id, db_client=db_client)
-    await sse_handler.send_table_update(table_id=table_id, data=updated_table)
+    # await sse_handler.send_table_update(table_id=table_id, data=updated_table)
     return updated_table

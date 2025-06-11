@@ -5,7 +5,7 @@ from typing import List, Optional
 from bson import ObjectId
 from pydantic import BaseModel, Field
 
-from server.app.schemas.py_object_id import PyObjectId
+from app.schemas.py_object_id import PyObjectId
 
 
 class GameStatusEnum(str, Enum):

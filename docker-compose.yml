@@ -1,11 +1,10 @@
-version: '3.8'
-
 services:
   mongo:
     image: mongo
     container_name: mongo
     ports:
-      - "27017:27017"
+      - "27018:27017"
+
     volumes:
       - mongo_data:/data/db
 
@@ -14,18 +13,27 @@ services:
     container_name: fastapi-server
     ports:
       - "8000:8000"
-    environment:
-      - MONGO_URI=mongodb://mongo:27017
+    env_file:
+      - ./server/.env
     depends_on:
       - mongo
 
-#  client:
-#    build: ./client
-#    container_name: nextjs-client
-#    ports:
-#      - "3000:3000"
-#    depends_on:
-#      - server
+  client:
+    build:
+      context: ./client
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    container_name: nextjs-client
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./client/.env
+    environment:
+      NEXT_PUBLIC_API_URL: "${NEXT_PUBLIC_API_URL}"
+    depends_on:
+      - server
+
+
 
 volumes:
   mongo_data:
