@@ -93,7 +93,7 @@ async def update_table(
         )
 
 
-@router.delete("/{table_id}", status_code=status.HTTP_204_NO_CONTENT, response_model=Optional[TableDBResponse])
+@router.delete("/{table_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_table(table_id: str, current_user: UserResponse = Depends(get_current_user),
                        db_client: AsyncIOMotorClient = Depends(get_database)):
     if not ObjectId.is_valid(table_id):
