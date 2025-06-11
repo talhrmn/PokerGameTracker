@@ -13,7 +13,7 @@ from server.app.schemas.user import UserResponse, UserStats
 router = APIRouter()
 
 
-@router.get("/dashboard")
+@router.get("/dashboard", response_model=DashboardStats)
 async def get_dashboard_stats(current_user: UserResponse = Depends(get_current_user),
                               db_client: AsyncIOMotorClient = Depends(get_database)):
     user = await user_handler.get_user_by_id(user_id=current_user.id, db_client=db_client)

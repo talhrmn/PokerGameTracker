@@ -1,5 +1,5 @@
 from datetime import UTC, datetime
-from typing import List
+from typing import List, Optional
 
 from bson import ObjectId
 from fastapi import APIRouter, HTTPException, Depends, status
@@ -16,7 +16,7 @@ from server.app.schemas.user import UserResponse
 router = APIRouter()
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=GameDBResponse)
 async def create_game(game: GameBase,
                       current_user: UserResponse = Depends(get_current_user),
                       db_client: AsyncIOMotorClient = Depends(get_database)) -> GameDBResponse:
@@ -87,7 +87,7 @@ async def get_game(game_id: str, current_user: UserResponse = Depends(get_curren
     return game
 
 
-@router.put("/{game_id}")
+@router.put("/{game_id}", response_model=Optional[GameDBResponse])
 async def update_game(
         game_id: str,
         game_update: GameUpdate,
@@ -112,7 +112,7 @@ async def update_game(
     return updated_game
 
 
-@router.put("/{game_id}/buyin")
+@router.put("/{game_id}/buyin", response_model=Optional[GameDBResponse])
 async def update_player_buyin(
         game_id: str,
         buyin: BuyIn,
@@ -137,7 +137,7 @@ async def update_player_buyin(
     return updated_game
 
 
-@router.put("/{game_id}/cashout")
+@router.put("/{game_id}/cashout", response_model=Optional[GameDBResponse])
 async def update_player_cashout(
         game_id: str,
         cash_out: CashOut,
@@ -170,7 +170,7 @@ async def update_player_cashout(
     return updated_game
 
 
-@router.post("/{game_id}/end")
+@router.post("/{game_id}/end", response_model=Optional[GameDBResponse])
 async def update_end_game(
         game_id: str,
         current_user: UserResponse = Depends(get_current_user),

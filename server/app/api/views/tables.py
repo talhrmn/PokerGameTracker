@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from bson import ObjectId
 from fastapi import APIRouter, HTTPException, Depends, status, Body
@@ -15,7 +15,7 @@ from server.app.schemas.user import UserResponse
 router = APIRouter()
 
 
-@router.post("/create", status_code=status.HTTP_201_CREATED)
+@router.post("/create", status_code=status.HTTP_201_CREATED, response_model=Optional[TableDBResponse])
 async def create_table(table: TableBase, current_user: UserResponse = Depends(get_current_user),
                        db_client: AsyncIOMotorClient = Depends(get_database)):
     try:
@@ -62,7 +62,7 @@ async def get_table(table_id: str, current_user: UserResponse = Depends(get_curr
     return table
 
 
-@router.put("/{table_id}")
+@router.put("/{table_id}", response_model=Optional[TableDBResponse])
 async def update_table(
         table_id: str,
         table_update: TableUpdate,
@@ -93,7 +93,7 @@ async def update_table(
         )
 
 
-@router.delete("/{table_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{table_id}", status_code=status.HTTP_204_NO_CONTENT, response_model=Optional[TableDBResponse])
 async def delete_table(table_id: str, current_user: UserResponse = Depends(get_current_user),
                        db_client: AsyncIOMotorClient = Depends(get_database)):
     if not ObjectId.is_valid(table_id):
@@ -117,7 +117,7 @@ async def delete_table(table_id: str, current_user: UserResponse = Depends(get_c
         )
 
 
-@router.put("/{table_id}/invite", status_code=status.HTTP_200_OK)
+@router.put("/{table_id}/invite", status_code=status.HTTP_200_OK, response_model=Optional[TableDBResponse])
 async def invite_user(
         table_id: str,
         friends: List[Dict] = Body(...),
@@ -148,7 +148,7 @@ async def invite_user(
     return updated_table
 
 
-@router.put("/{table_id}/{player_status}", status_code=status.HTTP_200_OK)
+@router.put("/{table_id}/{player_status}", status_code=status.HTTP_200_OK, response_model=Optional[TableDBResponse])
 async def respond_to_invite(
         table_id: str,
         player_status: PlayerStatusEnum,
