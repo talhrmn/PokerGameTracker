@@ -1,0 +1,59 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	background-color: #0a1c28;
+	color: #f0f0f0;
+	padding: 1rem;
+}
+
+.gameContainer {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex-grow: 1;
+	margin-top: 2rem;
+}
+
+.loadingContainer,
+.errorContainer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	background-color: #0a1c28;
+	color: #f0f0f0;
+}
+
+.loadingSpinner {
+	width: 50px;
+	height: 50px;
+	border: 5px solid rgba(255, 255, 255, 0.3);
+	border-radius: 50%;
+	border-top-color: #f0f0f0;
+	animation: spin 1s ease-in-out infinite;
+	margin-bottom: 1rem;
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.button {
+	background-color: #c52c2c;
+	color: white;
+	border: none;
+	padding: 0.5rem 1.5rem;
+	border-radius: 4px;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+.button:hover {
+	background-color: #d44343;
+}

@@ -1,0 +1,84 @@
+.controlsContainer {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	margin-top: 20px;
+	padding: 20px;
+	background-color: #152638;
+	border-radius: 12px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	width: 100%;
+	max-width: 800px;
+}
+
+.statusControls {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.statusButton {
+	max-width: 15rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 8px 16px;
+	background-color: #213144;
+	color: #8a9bac;
+	border: 1px solid #2d4054;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 0.9rem;
+	transition: all 0.2s;
+	flex-grow: 1;
+	text-align: center;
+}
+
+.statusButton:hover:not(:disabled) {
+	background-color: #2d4054;
+	color: #f0f0f0;
+}
+
+.statusButton:disabled {
+	opacity: 0.7;
+	cursor: not-allowed;
+}
+
+.activeStatus {
+	background-color: #2c5282;
+	color: white;
+	border-color: #3182ce;
+}
+
+.actionButtons {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.actionButton {
+	padding: 8px 16px;
+	background-color: #3182ce;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 0.9rem;
+	transition: background-color 0.2s;
+}
+
+.actionButton:hover {
+	background-color: #4299e1;
+}
+
+.actionButton:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+@media (min-width: 768px) {
+	.statusControls {
+		flex-wrap: nowrap;
+	}
+}

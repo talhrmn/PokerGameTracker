@@ -1,0 +1,305 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  visibility: hidden;
+  transition: visibility 0.5s ease-in-out;
+}
+
+.overlayVisible {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: visible;
+}
+
+.container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: fit-content;
+  height: fit-content;
+  margin: 0;
+  padding: 24px;
+  background-color: #1a1f2e;
+  color: #e1e3e9;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+  z-index: 1000;
+}
+
+.containerOpen {
+  opacity: 1;
+  visibility: visible;
+}
+
+.topHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  position: sticky;
+  top: 0;
+  background-color: #1a1f2e;
+  padding-bottom: 12px;
+  z-index: 10;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #e1e3e9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.closeButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #2a3042;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  color: #ffffff;
+}
+
+.status {
+  background-color: #2a5f4e;
+  color: #72ddb3;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  background-color: #222636;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.infoIcon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2e324a;
+  border-radius: 8px;
+  margin-right: 16px;
+  color: #6b70fa;
+}
+
+.textIcon {
+  color: #6b70fa;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.tagIcon {
+  color: #6b70fa;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.infoContent {
+  flex: 1;
+}
+
+.infoLabel {
+  color: #9ea3b5;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.infoValue {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.winnerSection {
+  margin-bottom: 24px;
+}
+
+.winnerHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #e1e3e9;
+  margin-bottom: 12px;
+}
+
+.winnerHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.winnerCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #222636;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #ffd700;
+}
+
+.winnerName {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.winnerProfit {
+  color: #72ddb3;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.paymentSection {
+  margin-bottom: 24px;
+  background-color: #222636;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.paymentTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.paymentDescription {
+  color: #9ea3b5;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.noPayments {
+  text-align: center;
+  color: #9ea3b5;
+  padding: 16px;
+}
+
+.paymentList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.paymentItem {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  background-color: #2a3042;
+  border-radius: 6px;
+}
+
+.paymentFrom {
+  font-weight: 600;
+  flex: 1;
+}
+
+.paymentArrow {
+  margin: 0 12px;
+  color: #6b70fa;
+}
+
+.paymentTo {
+  font-weight: 600;
+  flex: 1;
+}
+
+.paymentAmount {
+  font-weight: 600;
+  color: #72ddb3;
+}
+
+.playersSection {
+  margin-bottom: 24px;
+}
+
+.playersTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.playersList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.playerCard {
+  background-color: #222636;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.playerName {
+  font-weight: 600;
+}
+
+.playerProfit {
+  font-weight: 600;
+}
+
+.profit {
+  color: #72ddb3;
+}
+
+.loss {
+  color: #f87272;
+}
+
+@media (max-width: 640px) {
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .playersList {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,216 @@
+.container {
+  background-color: #1f2937;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  border: 1px solid #4a5568;
+  transition-property: all;
+  transition-duration: 300ms;
+}
+
+.content {
+  padding: 1.5rem;
+}
+
+.tableWrapper {
+  margin-top: 1rem;
+  flex-grow: 1;
+}
+
+.tableContainer {
+  overflow-x: auto;
+}
+
+.table {
+  min-width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHead {
+  background-color: #4a5568;
+}
+
+.tableHeadFirstCell {
+  padding: 0.875rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+  padding-left: 1rem;
+}
+
+.tableHeadCell {
+  padding: 0.875rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.tableHeadCellHidden {
+  padding: 0.875rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .tableHeadCellHidden {
+    display: table-cell;
+  }
+}
+
+.tableHeadCellRight {
+  padding: 0.875rem;
+  text-align: right;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.tableBody {
+  background-color: #1f2937;
+}
+
+.tableBody > tr + tr {
+  border-top: 1px solid #4a5568;
+}
+
+.tableRow {
+  cursor: pointer;
+  transition-property: background-color;
+  transition-duration: 300ms;
+}
+
+.tableRow:hover {
+  background-color: #4a5568;
+}
+
+.tableFirstCell {
+  white-space: nowrap;
+  padding: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #ffffff;
+  padding-left: 1rem;
+}
+
+.tableCell {
+  white-space: nowrap;
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: #d1d5db;
+}
+
+.tableCellHidden {
+  white-space: nowrap;
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: #d1d5db;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .tableCellHidden {
+    display: table-cell;
+  }
+}
+
+.tableCellRight {
+  white-space: nowrap;
+  padding: 1rem;
+  text-align: right;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.joinButton {
+  background-color: #4ade80;
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  transition: background-color 300ms;
+}
+
+.joinButton:hover {
+  background-color: #22c55e;
+}
+
+.profitPositive {
+  color: #4ade80;
+}
+
+.profitNegative {
+  color: #f87171;
+}
+
+.profitNeutral {
+  color: #60a5fa;
+}
+
+.tabsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+}
+
+.titleBar {
+  background-color: #f56565;
+  width: 0.5rem;
+  height: 1.25rem;
+  margin-right: 0.75rem;
+  border-radius: 0.125rem;
+}
+
+.createTableButton {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  transition: background-color 300ms;
+}
+
+.createTableButton:hover {
+  background-color: #45a049;
+}
+
+.tabsNavigation {
+  display: flex;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #4a5568;
+}
+
+.tabButton {
+  padding: 0.75rem 1rem;
+  color: #d1d5db;
+  background-color: transparent;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 300ms;
+}
+
+.tabButton:hover {
+  color: #ffffff;
+}
+
+.activeTab {
+  color: #ffffff;
+  border-bottom: 2px solid #4ade80;
+}

@@ -1,0 +1,77 @@
+.playerSeat {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	background-color: rgba(22, 42, 61, 0.85);
+	border-radius: 10px;
+	padding: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+	transform: translate(-50%, -50%);
+	width: 180px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	border: 2px solid transparent;
+	z-index: 100;
+}
+
+.playerSeat:hover {
+	background-color: rgba(35, 65, 94, 0.9);
+	border-color: #f0c14b;
+	transform: translate(-50%, -50%) scale(1.05);
+}
+
+.avatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background-color: #6366f1;
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+	font-size: 1.2rem;
+	margin-right: 12px;
+	flex-shrink: 0;
+}
+
+.playerInfo {
+	flex-grow: 1;
+	overflow: hidden;
+}
+
+.username {
+	font-weight: bold;
+	margin-bottom: 4px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.chipCount {
+	display: flex;
+	align-items: center;
+	font-size: 0.9rem;
+	margin-bottom: 2px;
+}
+
+.chipIcon {
+	margin-right: 5px;
+	display: flex;
+	align-items: center;
+}
+
+.netProfit {
+	font-weight: bold;
+	font-size: 0.9rem;
+}
+
+.tableLeader {
+	border-color: rgb(241, 161, 13);
+	box-shadow: 0 0 20px 10px rgb(241, 161, 13, 0.4),
+		0 0 30px 15px rgb(241, 161, 13, 0.3);
+}
+
+.chipInfo {
+	margin: 0.2rem;
+}
