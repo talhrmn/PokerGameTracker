@@ -5,13 +5,13 @@ from bson import ObjectId
 from fastapi import APIRouter, HTTPException, Depends, status
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from server.app.api.dependencies import get_current_user, get_database
-from server.app.handlers.games import game_handler
-from server.app.handlers.sse import sse_handler
-from server.app.handlers.tables import table_handler
-from server.app.schemas.game import GameUpdate, GameDBInput, GameBase, GameStatusEnum, GameDBResponse, BuyIn, \
+from app.api.dependencies import get_current_user, get_database
+from app.handlers.games import game_handler
+from app.handlers.sse import sse_handler
+from app.handlers.tables import table_handler
+from app.schemas.game import GameUpdate, GameDBInput, GameBase, GameStatusEnum, GameDBResponse, BuyIn, \
     CashOut, Duration
-from server.app.schemas.user import UserResponse
+from app.schemas.user import UserResponse
 
 router = APIRouter()
 
@@ -108,7 +108,10 @@ async def update_game(
     update_data = {k: v for k, v in game_update.model_dump(exclude_unset=True).items() if v is not None}
     await game_handler.update_game(game_id=game_id, update_data=update_data, db_client=db_client)
     updated_game = await game_handler.get_game_by_id(game_id=game_id, db_client=db_client)
-    await sse_handler.send_game_update(game_id=game_id, data=updated_game)
+    try:
+        await sse_handler.send_game_update(game_id=game_id, data=updated_game)
+    except:
+        pass
     return updated_game
 
 
@@ -133,7 +136,10 @@ async def update_player_buyin(
                                            db_client=db_client)
 
     updated_game = await game_handler.get_game_by_id(game_id=game_id, db_client=db_client)
-    await sse_handler.send_game_update(game_id=game_id, data=updated_game)
+    try:
+        await sse_handler.send_game_update(game_id=game_id, data=updated_game)
+    except:
+        pass
     return updated_game
 
 
@@ -166,7 +172,10 @@ async def update_player_cashout(
                                               available_cash_out=current_available_cash_out, db_client=db_client)
 
     updated_game = await game_handler.get_game_by_id(game_id=game_id, db_client=db_client)
-    await sse_handler.send_game_update(game_id=game_id, data=updated_game)
+    try:
+        await sse_handler.send_game_update(game_id=game_id, data=updated_game)
+    except:
+        pass
     return updated_game
 
 
@@ -201,5 +210,8 @@ async def update_end_game(
     await game_handler.update_game(game_id=game_id, update_data=update_data, existing_game=existing_game,
                                    db_client=db_client)
     updated_game = await game_handler.get_game_by_id(game_id=game_id, db_client=db_client)
-    await sse_handler.send_game_update(game_id=game_id, data=updated_game)
+    try:
+        await sse_handler.send_game_update(game_id=game_id, data=updated_game)
+    except:
+        pass
     return updated_game

@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from starlette.requests import Request
 
-from server.app.handlers.sse import sse_handler
+from app.handlers.sse import sse_handler
 
 router = APIRouter()
 

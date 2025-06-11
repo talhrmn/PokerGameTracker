@@ -4,9 +4,9 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from server.app.api.api import api_router
-from server.app.core.config import settings
-from server.app.db.mongo_client import connect_to_mongo, close_mongo_connection
+from app.api.api import api_router
+from app.core.config import settings
+from app.db.mongo_client import connect_to_mongo, close_mongo_connection
 
 
 @asynccontextmanager

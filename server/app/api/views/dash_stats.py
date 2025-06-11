@@ -1,14 +1,14 @@
 from fastapi import APIRouter, HTTPException, Depends
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from server.app.api.dependencies import get_current_user, get_database
-from server.app.handlers.dash_stats import dash_stats_handler
-from server.app.handlers.games import game_handler
-from server.app.handlers.tables import table_handler
-from server.app.handlers.users import user_handler
-from server.app.schemas.dash_stats import DashboardStats, RecentGameStats
-from server.app.schemas.table import PlayerStatusEnum
-from server.app.schemas.user import UserResponse, UserStats
+from app.api.dependencies import get_current_user, get_database
+from app.handlers.dash_stats import dash_stats_handler
+from app.handlers.games import game_handler
+from app.handlers.tables import table_handler
+from app.handlers.users import user_handler
+from app.schemas.dash_stats import DashboardStats, RecentGameStats
+from app.schemas.table import PlayerStatusEnum
+from app.schemas.user import UserResponse, UserStats
 
 router = APIRouter()
 

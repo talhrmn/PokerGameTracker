@@ -48,23 +48,23 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	width: 80%; /* Take up the full width of the parent container */
-	height: 80%; /* Set a height to ensure the stacks align at the bottom */
+	width: 80%;
+	height: 80%;
 }
 
 .chipContainer {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 80%; /* Take up the full width of the parent container */
-	height: 80%; /* Set a height to ensure the stacks align at the bottom */
+	width: 80%;
+	height: 80%;
 }
 
 .chipStack {
 	display: flex;
-	flex-direction: column; /* Stack chips vertically */
-	align-items: center; /* Center each chip within the stack */
-	margin: 2rem; /* Space between each stack */
+	flex-direction: column;
+	align-items: center;
+	margin: 2rem;
 }
 
 .potAmount {

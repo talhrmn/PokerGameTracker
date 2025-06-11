@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from server.app.api.dependencies import get_database, get_current_user
-from server.app.handlers.games import game_handler
-from server.app.handlers.tables import table_handler
-from server.app.schemas.trends import TrendsResponse
-from server.app.schemas.user import UserResponse
+from app.api.dependencies import get_database, get_current_user
+from app.handlers.games import game_handler
+from app.handlers.tables import table_handler
+from app.schemas.trends import TrendsResponse
+from app.schemas.user import UserResponse
 
 router = APIRouter()
 

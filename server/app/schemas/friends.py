@@ -2,7 +2,7 @@ from typing import List
 
 from pydantic import BaseModel
 
-from server.app.schemas.user import UserResponse
+from app.schemas.user import UserResponse
 
 
 class FriendsResponse(BaseModel):

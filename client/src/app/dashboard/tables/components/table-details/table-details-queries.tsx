@@ -37,7 +37,7 @@ export const useGameStart = (
 		onSuccess: (data) => {
 			alert("Game Started Successfully!");
 			onClose();
-			redirectToGame(data.id);
+			redirectToGame(data._id);
 		},
 		onError: () => alert("Failed to start game"),
 	});

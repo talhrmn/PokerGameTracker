@@ -6,11 +6,11 @@ from fastapi import HTTPException, status as status_code
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import DESCENDING
 
-from server.app.handlers.tables import table_handler
-from server.app.handlers.users import user_handler
-from server.app.schemas.game import GameDBInput, GameUpdate, GameStatusEnum, GameBase, GameDBResponse, BuyIn, Duration
-from server.app.schemas.table import PlayerStatusEnum
-from server.app.schemas.user import UserStats, MonthlyStats, UserResponse
+from app.handlers.tables import table_handler
+from app.handlers.users import user_handler
+from app.schemas.game import GameDBInput, GameUpdate, GameStatusEnum, GameBase, GameDBResponse, BuyIn, Duration
+from app.schemas.table import PlayerStatusEnum
+from app.schemas.user import UserStats, MonthlyStats, UserResponse
 
 
 class GameHandler:

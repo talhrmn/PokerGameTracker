@@ -6,11 +6,11 @@ from typing import Dict, Set, Generic, TypeVar
 from starlette.requests import Request
 from starlette.responses import StreamingResponse
 
-from server.app.api.dependencies import get_database
-from server.app.handlers.games import game_handler
-from server.app.handlers.tables import table_handler
-from server.app.schemas.game import GameDBResponse
-from server.app.schemas.table import TableDBResponse
+from app.api.dependencies import get_database
+from app.handlers.games import game_handler
+from app.handlers.tables import table_handler
+from app.schemas.game import GameDBResponse
+from app.schemas.table import TableDBResponse
 
 T = TypeVar("T")
 

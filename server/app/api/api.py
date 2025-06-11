@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from server.app.api.views import auth, users, friends, tables, games, dash_stats, statistics, trends, sse
+from app.api.views import auth, users, friends, tables, games, dash_stats, statistics, trends, sse
 
 api_router = APIRouter()
 

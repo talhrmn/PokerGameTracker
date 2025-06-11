@@ -5,9 +5,9 @@ from bson import ObjectId
 from fastapi import HTTPException, status as status_code
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from server.app.core.security import get_password_hash
-from server.app.schemas.game import GameStatusEnum
-from server.app.schemas.user import UserCreate, UserDBInput, UserStats, MonthlyStats, UserDBResponse
+from app.core.security import get_password_hash
+from app.schemas.game import GameStatusEnum
+from app.schemas.user import UserCreate, UserDBInput, UserStats, MonthlyStats, UserDBResponse
 
 
 class UserHandler:

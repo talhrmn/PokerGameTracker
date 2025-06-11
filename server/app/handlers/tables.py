@@ -5,9 +5,9 @@ from bson import ObjectId
 from fastapi import HTTPException, status as status_code
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from server.app.schemas.game import GameStatusEnum
-from server.app.schemas.table import PlayerStatus, PlayerStatusEnum, TableDBInput, TableBase, TableDBResponse
-from server.app.schemas.user import UserDBInput
+from app.schemas.game import GameStatusEnum
+from app.schemas.table import PlayerStatus, PlayerStatusEnum, TableDBInput, TableBase, TableDBResponse
+from app.schemas.user import UserDBInput
 
 
 class TableHandler:

@@ -4,10 +4,10 @@ from bson import ObjectId
 from fastapi import APIRouter, HTTPException, Depends, status
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from server.app.api.dependencies import get_current_user, get_database
-from server.app.handlers.users import user_handler
-from server.app.schemas.friends import FriendsResponse
-from server.app.schemas.user import UserResponse
+from app.api.dependencies import get_current_user, get_database
+from app.handlers.users import user_handler
+from app.schemas.friends import FriendsResponse
+from app.schemas.user import UserResponse
 
 router = APIRouter()
 
