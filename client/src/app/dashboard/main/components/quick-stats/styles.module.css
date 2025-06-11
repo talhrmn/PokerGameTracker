@@ -1,0 +1,89 @@
+.statsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.statCard {
+  background-color: #1f2937;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  padding: 1.25rem;
+}
+
+.statHeader {
+  display: flex;
+  align-items: center;
+}
+
+.iconContainer {
+  flex-shrink: 0;
+  background-color: #374151;
+  border-radius: 0.375rem;
+  padding: 0.75rem;
+}
+
+.icon {
+  height: 1.5rem;
+  width: 1.5rem;
+  color: white;
+}
+
+.statInfo {
+  margin-left: 1.25rem;
+  width: 0;
+  flex: 1;
+}
+
+.statName {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #9ca3af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statValue {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: white;
+}
+
+.changeIndicator {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.increase {
+  color: #34d399;
+}
+
+.decrease {
+  color: #f87171;
+}
+
+.changeValue {
+  font-weight: 500;
+}
+
+.changeLabel {
+  margin-left: 0.5rem;
+  color: #9ca3af;
+}
+
+@media (min-width: 640px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

@@ -1,0 +1,241 @@
+.container {
+  background-color: #1f2937;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  border: 1px solid #4a5568;
+  transition-property: all;
+  transition-duration: 300ms;
+}
+
+.container:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid #4b5563;
+}
+
+.content {
+  padding: 1.5rem;
+}
+
+.title {
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  font-weight: 500;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+}
+
+.titleBar {
+  background-color: #f56565;
+  width: 0.5rem;
+  height: 1.25rem;
+  margin-right: 0.5rem;
+  border-radius: 0.125rem;
+}
+
+.tableWrapper {
+  margin-top: 1rem;
+  flex-grow: 1;
+}
+
+.tableContainer {
+  overflow-x: auto;
+}
+
+.table {
+  min-width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHead {
+  background-color: #4a5568;
+}
+
+.tableHeadCell {
+  padding-top: 0.875rem;
+  padding-bottom: 0.875rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.tableHeadFirstCell {
+  padding-top: 0.875rem;
+  padding-bottom: 0.875rem;
+  padding-left: 1rem;
+  padding-right: 0.75rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+@media (min-width: 640px) {
+  .tableHeadFirstCell {
+    padding-left: 1.5rem;
+  }
+}
+
+.tableHeadCellHidden {
+  padding-top: 0.875rem;
+  padding-bottom: 0.875rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .tableHeadCellHidden {
+    display: table-cell;
+  }
+}
+
+.tableHeadCellRight {
+  padding-top: 0.875rem;
+  padding-bottom: 0.875rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  text-align: right;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.tableBody {
+  background-color: #1f2937;
+}
+
+.tableBody > tr + tr {
+  border-top: 1px solid #4a5568;
+}
+
+.tableRow {
+  cursor: pointer;
+  transition-property: background-color;
+  transition-duration: 300ms;
+}
+
+.tableRow:hover {
+  background-color: #4a5568;
+}
+
+.tableCell {
+  white-space: nowrap;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  font-size: 0.875rem;
+  color: #d1d5db;
+}
+
+.tableFirstCell {
+  white-space: nowrap;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+@media (min-width: 640px) {
+  .tableFirstCell {
+    padding-left: 1.5rem;
+  }
+}
+
+.tableCellHidden {
+  white-space: nowrap;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  font-size: 0.875rem;
+  color: #d1d5db;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .tableCellHidden {
+    display: table-cell;
+  }
+}
+
+.tableCellRight {
+  white-space: nowrap;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  text-align: right;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.profitPositive {
+  color: #4ade80;
+}
+
+.profitNegative {
+  color: #f87171;
+}
+
+.iconWithText {
+  display: flex;
+  align-items: center;
+}
+
+.playersIcon {
+  height: 1rem;
+  width: 1rem;
+  margin-right: 0.25rem;
+  color: #60a5fa;
+}
+
+.durationIcon {
+  height: 1rem;
+  width: 1rem;
+  margin-right: 0.25rem;
+  color: #fbbf24;
+}
+
+.viewAllContainer {
+  margin-top: 1.5rem;
+}
+
+.viewAllLink {
+  color: #818cf8;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  transition-property: all;
+}
+
+.viewAllLink:hover {
+  color: #a5b4fc;
+}
+
+.viewAllIcon {
+  margin-left: 0.25rem;
+  height: 1.25rem;
+  width: 1.25rem;
+  transform: translateX(0);
+  transition-property: transform;
+  transition-duration: 300ms;
+}
+
+.viewAllLink:hover .viewAllIcon {
+  transform: translateX(0.25rem);
+}

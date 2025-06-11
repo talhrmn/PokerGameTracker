@@ -1,0 +1,313 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  color: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #333;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.closeButton:hover {
+  color: #fff;
+}
+
+.modalBody {
+  padding: 20px;
+}
+
+.tableName {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #999;
+  font-size: 1.2rem;
+}
+
+.qrCodeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.qrCode {
+  width: 200px;
+  height: 200px;
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.scanText {
+  margin-top: 10px;
+  color: #999;
+}
+
+.divider {
+  height: 1px;
+  background-color: #333;
+  margin: 20px 0;
+}
+
+.friendsSection {
+  margin-top: 20px;
+}
+
+.sectionTitle {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.loadingState {
+  text-align: center;
+  color: #999;
+  padding: 20px 0;
+}
+
+.noFriends {
+  text-align: center;
+  color: #999;
+  padding: 20px 0;
+}
+
+.friendsList {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.friendItem {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-bottom: 5px;
+}
+
+.friendItem:hover {
+  background-color: #333;
+}
+
+.friendItem.selected {
+  background-color: rgba(0, 123, 255, 0.2);
+}
+
+.friendAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #444;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 15px;
+  overflow: hidden;
+}
+
+.friendAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.defaultAvatar {
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+
+.friendUsername {
+  flex-grow: 1;
+}
+
+.checkmark {
+  color: #0099ff;
+  margin-left: 10px;
+}
+
+.inviteButton {
+  width: 100%;
+  padding: 12px;
+  background-color: #0099ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inviteButton:hover {
+  background-color: #007acc;
+}
+
+.inviteButton.disabled {
+  background-color: #444;
+  cursor: not-allowed;
+}
+
+.friendsDropdown {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.dropdownHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background-color: #333;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dropdownHeader:hover {
+  background-color: #444;
+}
+
+.dropdownArrow {
+  font-size: 12px;
+  transition: transform 0.3s;
+}
+
+.dropdownArrow.open {
+  transform: rotate(180deg);
+}
+
+.dropdownContent {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #222;
+  border-radius: 5px;
+  margin-top: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #333;
+  position: sticky;
+  top: 0;
+  background-color: #222;
+  z-index: 1;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.searchIcon {
+  color: #777;
+  margin-right: 8px;
+}
+
+.searchInput {
+  flex: 1;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 14px;
+  padding: 5px;
+  outline: none;
+}
+
+.friendsList {
+  overflow-y: auto;
+  padding: 0 5px;
+  flex: 1;
+  max-height: 250px;
+}
+
+.friendItem {
+  margin: 5px 0;
+  padding: 8px;
+}
+
+.fieldIcon {
+  margin-right: 1rem;
+  width: 24px;
+}
+
+.playerName {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.usernameContainer {
+  flex: 1;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.confirmedPlayer,
+.invitedPlayer,
+.declinedPlayer {
+  font-weight: bold;
+  text-align: right;
+  min-width: 100px;
+}
+
+.confirmedPlayer {
+  color: green;
+}
+
+.invitedPlayer {
+  color: blue;
+}
+
+.declinedPlayer {
+  color: red;
+}

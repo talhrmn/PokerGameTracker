@@ -1,0 +1,78 @@
+.tableContainer {
+	position: relative;
+	width: 800px;
+	height: 500px;
+}
+
+.table {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 700px;
+	height: 350px;
+	border-radius: 175px;
+	background-color: #784a36;
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+	/* overflow: hidden; */
+}
+
+.tableFelt {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	right: 10px;
+	bottom: 10px;
+	border-radius: 165px;
+	background-color: #236649;
+	box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.tableRail {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border-radius: 165px;
+	border: 4px solid rgba(0, 0, 0, 0.2);
+	pointer-events: none;
+}
+
+.potContainer {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 80%; /* Take up the full width of the parent container */
+	height: 80%; /* Set a height to ensure the stacks align at the bottom */
+}
+
+.chipContainer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 80%; /* Take up the full width of the parent container */
+	height: 80%; /* Set a height to ensure the stacks align at the bottom */
+}
+
+.chipStack {
+	display: flex;
+	flex-direction: column; /* Stack chips vertically */
+	align-items: center; /* Center each chip within the stack */
+	margin: 2rem; /* Space between each stack */
+}
+
+.potAmount {
+	color: white;
+	font-weight: bold;
+	font-size: 1.2rem;
+	text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+	padding: 4px 10px;
+	background-color: rgba(0, 0, 0, 0.3);
+	border-radius: 10px;
+}

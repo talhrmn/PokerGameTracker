@@ -1,0 +1,269 @@
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.7);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+	animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.modal {
+	background-color: #1a2c3d;
+	border-radius: 12px;
+	width: 500px;
+	max-width: 90vw;
+	max-height: 90vh;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+	animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+	from {
+		transform: translateY(30px);
+		opacity: 0;
+	}
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px 20px;
+	border-bottom: 1px solid #2d4054;
+	background-color: #152638;
+}
+
+.header h2 {
+	margin: 0;
+	font-size: 1.3rem;
+	color: #f0f0f0;
+}
+
+.closeButton {
+	background: none;
+	border: none;
+	color: #8a9bac;
+	font-size: 1.5rem;
+	cursor: pointer;
+	padding: 0;
+	margin: 0;
+	transition: color 0.2s;
+}
+
+.closeButton:hover {
+	color: #f0f0f0;
+}
+
+.tabs {
+	display: flex;
+	border-bottom: 1px solid #2d4054;
+	background-color: #152638;
+}
+
+.tab {
+	flex: 1;
+	padding: 12px;
+	background: none;
+	border: none;
+	color: #8a9bac;
+	cursor: pointer;
+	font-size: 0.9rem;
+	transition: all 0.2s;
+	font-weight: 500;
+}
+
+.tab:hover {
+	color: #f0f0f0;
+	background-color: rgba(255, 255, 255, 0.05);
+}
+
+.activeTab {
+	color: #f0f0f0;
+	border-bottom: 2px solid #3182ce;
+	background-color: rgba(49, 130, 206, 0.1);
+}
+
+.content {
+	padding: 20px;
+	overflow-y: auto;
+	flex-grow: 1;
+}
+
+/* components/PlayerDetails.module.css (continued) */
+.overview,
+.buyins,
+.hands {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.stat {
+	display: flex;
+	justify-content: space-between;
+	padding: 8px 0;
+	border-bottom: 1px solid #2d4054;
+}
+
+.stat span:first-child {
+	color: #8a9bac;
+}
+
+.profit {
+	color: #32cd32;
+	font-weight: bold;
+}
+
+.loss {
+	color: #ff4136;
+	font-weight: bold;
+}
+
+.listContainer {
+	background-color: #1a2c3d;
+	border-radius: 8px;
+	border: 1px solid #2d4054;
+	max-height: 200px;
+	overflow-y: auto;
+}
+
+.emptyState {
+	text-align: center;
+	color: #8a9bac;
+	padding: 20px;
+}
+
+.list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.listItem,
+.handItem {
+	padding: 12px 16px;
+	border-bottom: 1px solid #2d4054;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.listItem:last-child,
+.handItem:last-child {
+	border-bottom: none;
+}
+
+.buyInAmount,
+.handAmount {
+	font-weight: bold;
+}
+
+.buyInTime,
+.handDescription {
+	color: #8a9bac;
+	font-size: 0.9rem;
+}
+
+.handDescription {
+	flex-grow: 1;
+	margin-right: 10px;
+	color: #f0f0f0;
+}
+
+.inputGroup {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-bottom: 10px;
+}
+
+.inputGroup label {
+	font-size: 0.85rem;
+	color: #8a9bac;
+}
+
+.inputGroup input {
+	padding: 8px 12px;
+	border-radius: 4px;
+	border: 1px solid #2d4054;
+	background-color: #152638;
+	color: #f0f0f0;
+	font-size: 1rem;
+}
+
+.inputWithPrefix {
+	display: flex;
+	align-items: center;
+}
+
+.inputGroup :disabled,
+.inputWithPrefix :disabled {
+	cursor: not-allowed;
+}
+
+.inputWithPrefix span {
+	display: inline-block;
+	padding: 8px 12px;
+	background-color: #213144;
+	border: 1px solid #2d4054;
+	border-right: none;
+	border-radius: 4px 0 0 4px;
+	color: #8a9bac;
+}
+
+.inputWithPrefix input {
+	flex-grow: 1;
+	border-radius: 0 4px 4px 0;
+}
+
+.button {
+	background-color: #3182ce;
+	color: white;
+	border: none;
+	padding: 10px 16px;
+	border-radius: 4px;
+	font-size: 0.9rem;
+	cursor: pointer;
+	transition: background-color 0.2s;
+	font-weight: 500;
+}
+
+.button:hover {
+	background-color: #4299e1;
+}
+
+.button:disabled {
+	background-color: #213144;
+	color: #8a9bac;
+	cursor: not-allowed;
+}
+
+.cashOutContainer,
+.addBuyInContainer,
+.addHandContainer {
+	background-color: #152638;
+	padding: 15px;
+	border-radius: 8px;
+	border: 1px solid #2d4054;
+}
