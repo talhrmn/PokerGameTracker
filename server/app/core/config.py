@@ -2,6 +2,7 @@ from typing import List, Optional
 from pydantic import AnyHttpUrl, validator
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
+import secrets
 
 load_dotenv()
 
@@ -19,19 +20,19 @@ class Settings(BaseSettings):
     WORKERS: int = 1
     
     # MongoDB Settings
-    MONGODB_URL: str
-    MONGODB_DB_NAME: str
+    MONGODB_URL: str = "mongodb://localhost:27017"
+    MONGODB_DB_NAME: str = "poker_game_tracker"
     MONGODB_MAX_CONNECTIONS: int = 100
     MONGODB_MIN_CONNECTIONS: int = 1
     MONGODB_MAX_IDLE_TIME_MS: int = 30000
     
     # Security Settings
-    SECRET_KEY: str
+    SECRET_KEY: str = secrets.token_urlsafe(32)
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
     # CORS Settings
-    CORS_ORIGINS: List[str]
+    CORS_ORIGINS: List[str] = ["http://localhost:3000"]
     
     @validator("CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: str | List[str]) -> List[str]:
