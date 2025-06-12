@@ -70,7 +70,7 @@ class GameDBInput(GameBase):
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
-class GameDBResponse(GameDBInput):
+class GameDBOutput(GameDBInput):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
 
     model_config = {

@@ -74,7 +74,7 @@ class TableDBInput(TableBase):
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
-class TableDBResponse(TableDBInput):
+class TableDBOutput(TableDBInput):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
 
     model_config = {

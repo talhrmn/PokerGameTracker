@@ -1,16 +1,14 @@
-from bson import ObjectId
 from fastapi import APIRouter, HTTPException, Depends, status
-from motor.motor_asyncio import AsyncIOMotorClient
 
-from app.api.dependencies import get_current_user, get_database
+from app.api.dependencies import get_current_user, get_user_service
 from app.core.security import get_password_hash
-from app.handlers.users import user_handler
 from app.schemas.user import UserUpdate, UserResponse
+from app.services.user_service import UserService
 
 router = APIRouter()
 
 
-@router.get("/me", response_model=UserResponse)
+@router.get("/me")
 async def get_current_user_profile(current_user: UserResponse = Depends(get_current_user)):
     return current_user
 
@@ -19,15 +17,14 @@ async def get_current_user_profile(current_user: UserResponse = Depends(get_curr
 async def update_user_profile(
         user_update: UserUpdate,
         current_user: UserResponse = Depends(get_current_user),
-        db_client: AsyncIOMotorClient = Depends(get_database)
+        user_service: UserService = Depends(get_user_service)
 ):
-    user_id = ObjectId(current_user.id)
     update_data = {k: v for k, v in user_update.model_dump(exclude_unset=True).items() if v is not None}
     if "password" in update_data:
         update_data["password_hash"] = get_password_hash(update_data.pop("password"))
 
     try:
-        user_handler.update_user_data(user_id=user_id, update_data=update_data, db_client=db_client)
+        await user_service.update_user_data(str(current_user.id), update_data)
         return
     except Exception as e:
         raise HTTPException(
