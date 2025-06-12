@@ -1,9 +1,8 @@
 from typing import List
 
-from pydantic import BaseModel
-
 from app.schemas.game import GameStatusEnum
 from app.schemas.user import UserStats
+from pydantic import BaseModel
 
 
 class MonthlyChangesStats(BaseModel):

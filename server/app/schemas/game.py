@@ -1,11 +1,10 @@
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from enum import Enum
 from typing import List, Optional
 
+from app.schemas.py_object_id import PyObjectId
 from bson import ObjectId
 from pydantic import BaseModel, Field
-
-from app.schemas.py_object_id import PyObjectId
 
 
 class GameStatusEnum(str, Enum):
@@ -76,5 +75,5 @@ class GameDBResponse(GameDBInput):
     model_config = {
         "populate_by_name": True,
         "arbitrary_types_allowed": True,
-        "json_encoders": {ObjectId: str}
+        "json_encoders": {ObjectId: str},
     }

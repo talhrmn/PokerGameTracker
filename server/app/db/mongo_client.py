@@ -1,11 +1,12 @@
 import logging
 from typing import Optional
+
+from app.core.config import settings
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 
-from app.core.config import settings
-
 logger = logging.getLogger(__name__)
+
 
 class MongoDB:
     client: Optional[AsyncIOMotorClient] = None
@@ -20,10 +21,10 @@ class MongoDB:
                 minPoolSize=settings.MONGODB_MIN_CONNECTIONS,
                 maxIdleTimeMS=settings.MONGODB_MAX_IDLE_TIME_MS,
                 serverSelectionTimeoutMS=5000,
-                tz_aware=True
+                tz_aware=True,
             )
             # Verify the connection
-            await cls.client.admin.command('ping')
+            await cls.client.admin.command("ping")
             cls.db = cls.client[settings.MONGODB_DB_NAME]
             logger.info("Successfully connected to MongoDB")
         except (ConnectionFailure, ServerSelectionTimeoutError) as e:
@@ -43,13 +44,21 @@ class MongoDB:
         try:
             if not cls.client:
                 return False
-            await cls.client.admin.command('ping')
+            await cls.client.admin.command("ping")
             return True
         except Exception as e:
             logger.error(f"MongoDB health check failed: {e}")
             return False
 
+
 # Initialize connection functions
 connect_to_mongo = MongoDB.connect_to_mongo
 close_mongo_connection = MongoDB.close_mongo_connection
 health_check = MongoDB.health_check
+
+
+def get_db_client() -> AsyncIOMotorClient:
+    """Get the MongoDB client instance."""
+    if not MongoDB.client:
+        raise RuntimeError("MongoDB client not initialized")
+    return MongoDB.client

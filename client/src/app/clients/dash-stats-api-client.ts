@@ -3,7 +3,7 @@ import { DashboardStatsType } from "@/app/dashboard/main/types";
 
 class DashStatsApiClient {
     async getDashStats(): Promise<DashboardStatsType> {
-        return api.getData<DashboardStatsType>("/dash-stats/dashboard")
+        return api.getData<DashboardStatsType>("/statistics/dashboard")
     }
 }
 

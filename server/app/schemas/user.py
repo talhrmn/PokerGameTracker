@@ -1,9 +1,8 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, Field, EmailStr
-
 from app.schemas.py_object_id import PyObjectId
+from pydantic import BaseModel, EmailStr, Field
 
 
 class UserStats(BaseModel):
@@ -57,5 +56,5 @@ class UserDBResponse(UserDBInput):
     model_config = {
         "populate_by_name": True,
         "arbitrary_types_allowed": True,
-        "json_encoders": {PyObjectId: str}
+        "json_encoders": {PyObjectId: str},
     }

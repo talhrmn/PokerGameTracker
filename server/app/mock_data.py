@@ -1,5 +1,5 @@
 import random
-from datetime import datetime, timedelta, UTC
+from datetime import UTC, datetime, timedelta
 
 from bson import ObjectId
 from passlib.context import CryptContext
@@ -35,20 +35,29 @@ def main():
 
         # Generate monthly stats
         monthly_stats = []
-        months = ["Oct 2024", "Nov 2024", "Dec 2024", "Jan 2025", "Feb 2025", "Mar 2025"]
+        months = [
+            "Oct 2024",
+            "Nov 2024",
+            "Dec 2024",
+            "Jan 2025",
+            "Feb 2025",
+            "Mar 2025",
+        ]
         for month in months:
             monthly_profit = random.randint(-200, 500)
             monthly_win_rate = random.uniform(0.25, 0.75)
             monthly_tables = random.randint(1, 10)
             monthly_hours = random.randint(4, 40)
 
-            monthly_stats.append({
-                "month": month,
-                "profit": monthly_profit,
-                "win_rate": monthly_win_rate,
-                "tables_played": monthly_tables,
-                "hours_played": monthly_hours
-            })
+            monthly_stats.append(
+                {
+                    "month": month,
+                    "profit": monthly_profit,
+                    "win_rate": monthly_win_rate,
+                    "tables_played": monthly_tables,
+                    "hours_played": monthly_hours,
+                }
+            )
 
         user = {
             "_id": user_id,
@@ -62,10 +71,10 @@ def main():
                 "total_profit": total_profit,
                 "win_rate": win_rate,
                 "tables_played": tables_played,
-                "hours_played": hours_played
+                "hours_played": hours_played,
             },
             "monthly_stats": monthly_stats,
-            "friends": []
+            "friends": [],
         }
 
         # Add some friends
@@ -82,7 +91,9 @@ def main():
         num_friends = random.randint(0, min(5, len(potential_friends)))
         friend_indices = random.sample(potential_friends, num_friends)
 
-        user["friends"] = [str(users[friend_idx]["_id"]) for friend_idx in friend_indices]
+        user["friends"] = [
+            str(users[friend_idx]["_id"]) for friend_idx in friend_indices
+        ]
 
     # Create tables and games
     tables = []
@@ -115,11 +126,13 @@ def main():
             if player_idx == creator_idx:
                 status = "confirmed"
 
-            players.append({
-                "user_id": str(users[player_idx]["_id"]),
-                "username": users[player_idx]["username"],
-                "status": status
-            })
+            players.append(
+                {
+                    "user_id": str(users[player_idx]["_id"]),
+                    "username": users[player_idx]["username"],
+                    "status": status,
+                }
+            )
 
         table = {
             "_id": table_id,
@@ -132,11 +145,13 @@ def main():
             "description": f"Regular {game_type} game with {blind_structure} blinds",
             "venue": venue,
             "creator_id": creator_id,
-            "status": random.choice(["scheduled", "in_progress", "completed", "cancelled"]),
+            "status": random.choice(
+                ["scheduled", "in_progress", "completed", "cancelled"]
+            ),
             "players": players,
             "created_at": datetime.now(UTC) - timedelta(days=random.randint(5, 30)),
             "updated_at": datetime.now(UTC) - timedelta(days=random.randint(0, 5)),
-            "game_id": str(game_id)
+            "game_id": str(game_id),
         }
 
         tables.append(table)
@@ -149,14 +164,19 @@ def main():
             if len(players) >= 2:
                 for i in range(min(2, len(players))):
                     players[i]["status"] = "confirmed"
-                confirmed_players = [p for p in players if p["status"] == "confirmed"][:2]
+                confirmed_players = [p for p in players if p["status"] == "confirmed"][
+                    :2
+                ]
 
         # Randomize actual attendees
-        attending_players = random.sample(confirmed_players,
-                                          random.randint(2, len(confirmed_players)))
+        attending_players = random.sample(
+            confirmed_players, random.randint(2, len(confirmed_players))
+        )
 
         # Game status
-        game_status = random.choice(["completed", "completed", "completed", "in_progress"])
+        game_status = random.choice(
+            ["completed", "completed", "completed", "in_progress"]
+        )
 
         # Generate realistic financials
         total_pot = 0
@@ -171,10 +191,7 @@ def main():
             for _ in range(num_buy_ins):
                 amount = min_buy_in * random.randint(1, 2)
                 buy_time = game_date + timedelta(minutes=random.randint(0, 180))
-                buy_ins.append({
-                    "amount": amount,
-                    "time": buy_time
-                })
+                buy_ins.append({"amount": amount, "time": buy_time})
                 player_total_buy_in += amount
                 total_pot += amount
 
@@ -194,28 +211,34 @@ def main():
                 num_hands = random.randint(1, 3)
                 for k in range(num_hands):
                     # Integer hand amounts
-                    hand_amount = random.randint(20, max(20, int(player_total_buy_in * 0.5)))
+                    hand_amount = random.randint(
+                        20, max(20, int(player_total_buy_in * 0.5))
+                    )
                     hand_descriptions = [
                         f"Flopped a set of Aces against villain's top pair",
                         f"Rivered a straight against opponent's two pair",
                         f"Bluffed on the turn with a gutshot, opponent folded",
                         f"Slow-played Kings and got paid off by AQ",
-                        f"Called down with second pair and was good"
+                        f"Called down with second pair and was good",
                     ]
-                    notable_hands.append({
-                        "hand_id": f"hand_{game_id}_{k}",
-                        "description": random.choice(hand_descriptions),
-                        "amount_won": hand_amount
-                    })
+                    notable_hands.append(
+                        {
+                            "hand_id": f"hand_{game_id}_{k}",
+                            "description": random.choice(hand_descriptions),
+                            "amount_won": hand_amount,
+                        }
+                    )
 
-            game_players.append({
-                "user_id": player["user_id"],
-                "username": player["username"],
-                "buy_ins": buy_ins,
-                "cash_out": cash_out,
-                "net_profit": net_profit,
-                "notable_hands": notable_hands
-            })
+            game_players.append(
+                {
+                    "user_id": player["user_id"],
+                    "username": player["username"],
+                    "buy_ins": buy_ins,
+                    "cash_out": cash_out,
+                    "net_profit": net_profit,
+                    "notable_hands": notable_hands,
+                }
+            )
 
         if game_status == "completed" and game_players:
             total_net_profit = sum(player["net_profit"] for player in game_players)
@@ -225,14 +248,18 @@ def main():
                     biggest_winner = max(game_players, key=lambda p: p["net_profit"])
                     idx = game_players.index(biggest_winner)
                     game_players[idx]["net_profit"] -= total_net_profit
-                    game_players[idx]["cash_out"] = sum(b["amount"] for b in game_players[idx]["buy_ins"]) + \
-                                                    game_players[idx]["net_profit"]
+                    game_players[idx]["cash_out"] = (
+                        sum(b["amount"] for b in game_players[idx]["buy_ins"])
+                        + game_players[idx]["net_profit"]
+                    )
                 else:
                     biggest_loser = min(game_players, key=lambda p: p["net_profit"])
                     idx = game_players.index(biggest_loser)
                     game_players[idx]["net_profit"] -= total_net_profit
-                    game_players[idx]["cash_out"] = sum(b["amount"] for b in game_players[idx]["buy_ins"]) + \
-                                                    game_players[idx]["net_profit"]
+                    game_players[idx]["cash_out"] = (
+                        sum(b["amount"] for b in game_players[idx]["buy_ins"])
+                        + game_players[idx]["net_profit"]
+                    )
 
         # Game duration
         if game_status == "completed":
@@ -250,13 +277,11 @@ def main():
             "players": game_players,
             "status": game_status,
             "creator_id": creator_id,
-            "duration": {
-                "hours": duration_hours,
-                "minutes": duration_minutes
-            },
+            "duration": {"hours": duration_hours, "minutes": duration_minutes},
             "total_pot": total_pot,
             "created_at": game_date,
-            "updated_at": game_date + timedelta(hours=duration_hours, minutes=duration_minutes)
+            "updated_at": game_date
+            + timedelta(hours=duration_hours, minutes=duration_minutes),
         }
 
         games.append(game)

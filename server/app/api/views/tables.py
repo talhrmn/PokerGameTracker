@@ -1,178 +1,166 @@
-from typing import List, Dict, Optional
+from typing import List, Optional
 
-from bson import ObjectId
-from fastapi import APIRouter, HTTPException, Depends, status, Body
-from motor.motor_asyncio import AsyncIOMotorClient
-
-from app.api.dependencies import get_current_user, get_database
-from app.handlers.games import game_handler
-from app.handlers.sse import sse_handler
-from app.handlers.tables import table_handler
-from app.schemas.game import GameStatusEnum
-from app.schemas.table import TableUpdate, TableBase, PlayerStatusEnum, TableDBResponse, PlayerStatus
+from app.api.dependencies import (
+    get_current_user,
+    get_table_service,
+)
+from app.core.exceptions import DatabaseError, InvalidInputError, ResourceNotFoundError
+from app.schemas.table import (
+    PlayerStatusEnum,
+    TableCreate,
+    TableDBResponse,
+    TableUpdate,
+)
 from app.schemas.user import UserResponse
+from app.services.table import TableService
+from fastapi import APIRouter, Depends, status
 
 router = APIRouter()
 
 
-@router.post("/create", status_code=status.HTTP_201_CREATED, response_model=Optional[TableDBResponse])
-async def create_table(table: TableBase, current_user: UserResponse = Depends(get_current_user),
-                       db_client: AsyncIOMotorClient = Depends(get_database)):
+@router.post("/", response_model=TableDBResponse, status_code=status.HTTP_201_CREATED)
+async def create_table(
+    table_data: TableCreate,
+    current_user: UserResponse = Depends(get_current_user),
+    table_service: TableService = Depends(get_table_service),
+):
+    """Create a new table."""
     try:
-        table_id = await table_handler.create_table(table=table, current_user=current_user, db_client=db_client)
-        updated_table = await table_handler.get_table_by_id(table_id=table_id, db_client=db_client)
-        # await sse_handler.send_table_update(table_id=str(updated_table.id), data=updated_table)
-        return updated_table
+        return await table_service.create_table(table_data, current_user)
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Table creation failed: {e}"
-        )
+        raise DatabaseError(f"Failed to create table: {str(e)}")
 
 
 @router.get("/", response_model=List[TableDBResponse])
 async def get_tables(
-        status: str = None,
-        limit: int = 10,
-        skip: int = 0,
-        current_user: UserResponse = Depends(get_current_user),
-        db_client: AsyncIOMotorClient = Depends(get_database)
+    status: Optional[str] = None,
+    limit: Optional[int] = None,
+    skip: Optional[int] = None,
+    current_user: UserResponse = Depends(get_current_user),
+    table_service: TableService = Depends(get_table_service),
 ):
-    tables = await table_handler.get_tables(status=status, limit=limit, skip=skip, current_user=current_user,
-                                            db_client=db_client)
-    return tables
+    """Get all tables for the current user."""
+    try:
+        return await table_service.get_tables(status, limit, skip)
+    except Exception as e:
+        raise DatabaseError(f"Failed to get tables: {str(e)}")
 
 
 @router.get("/{table_id}", response_model=TableDBResponse)
-async def get_table(table_id: str, current_user: UserResponse = Depends(get_current_user),
-                    db_client: AsyncIOMotorClient = Depends(get_database)):
-    if not ObjectId.is_valid(table_id):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid table ID")
-
-    table = await table_handler.get_table_by_id(table_id=table_id, db_client=db_client)
-    if not table:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Table not found")
-    user_is_player = any(
-        player.user_id == str(current_user.id)
-        for player in table.players
-    )
-    if not user_is_player and table.creator_id != str(current_user.id):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
-
-    return table
-
-
-@router.put("/{table_id}", response_model=Optional[TableDBResponse])
-async def update_table(
-        table_id: str,
-        table_update: TableUpdate,
-        current_user: UserResponse = Depends(get_current_user),
-        db_client: AsyncIOMotorClient = Depends(get_database)
+async def get_table(
+    table_id: str,
+    current_user: UserResponse = Depends(get_current_user),
+    table_service: TableService = Depends(get_table_service),
 ):
-    if not ObjectId.is_valid(table_id):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid table ID")
-    existing_table = await table_handler.get_table_by_id(table_id=table_id, db_client=db_client)
-
-    if not existing_table:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Table not found")
-
-    if str(existing_table.creator_id) != str(current_user.id):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only the creator can modify the table")
-
+    """Get a specific table."""
     try:
-        update_data = {k: v for k, v in table_update.model_dump(exclude_unset=True).items() if v is not None}
-        await table_handler.update_table(table_id=table_id, update_data=update_data, db_client=db_client)
+        table = await table_service.get_table_by_id(table_id)
+        if not table:
+            raise ResourceNotFoundError(f"Table {table_id} not found")
 
-        updated_table = await table_handler.get_table_by_id(table_id=table_id, db_client=db_client)
-        # await sse_handler.send_table_update(table_id=table_id, data=updated_table)
-        return updated_table
+        # Check if user is a player or creator
+        if (
+            str(current_user.id) not in [p.user_id for p in table.players]
+            and str(current_user.id) != table.creator_id
+        ):
+            raise InvalidInputError("You don't have access to this table")
+
+        return table
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Table update failed: {e}"
+        raise DatabaseError(f"Failed to get table: {str(e)}")
+
+
+@router.put("/{table_id}", response_model=TableDBResponse)
+async def update_table(
+    table_id: str,
+    table_data: TableUpdate,
+    current_user: UserResponse = Depends(get_current_user),
+    table_service: TableService = Depends(get_table_service),
+):
+    """Update a table."""
+    try:
+        table = await table_service.get_table_by_id(table_id)
+        if not table:
+            raise ResourceNotFoundError("Table not found")
+
+        # Check if user is the creator
+        if table.creator_id != str(current_user.id):
+            raise InvalidInputError("Only the creator can modify the table")
+
+        return await table_service.update_table(
+            table_id, table_data.dict(exclude_unset=True)
         )
+    except Exception as e:
+        raise DatabaseError(f"Failed to update table: {str(e)}")
+
+
+@router.post("/{table_id}/invite/{user_id}", response_model=TableDBResponse)
+async def invite_player(
+    table_id: str,
+    user_id: str,
+    current_user: UserResponse = Depends(get_current_user),
+    table_service: TableService = Depends(get_table_service),
+):
+    """Invite a player to the table."""
+    try:
+        table = await table_service.get_table_by_id(table_id)
+        if not table:
+            raise ResourceNotFoundError("Table not found")
+
+        # Check if user is the creator
+        if table.creator_id != str(current_user.id):
+            raise InvalidInputError("Only the creator can invite players")
+
+        return await table_service.invite_player(table_id, user_id)
+    except Exception as e:
+        raise DatabaseError(f"Failed to invite player: {str(e)}")
+
+
+@router.put("/{table_id}/respond", response_model=TableDBResponse)
+async def respond_to_invite(
+    table_id: str,
+    status: PlayerStatusEnum,
+    current_user: UserResponse = Depends(get_current_user),
+    table_service: TableService = Depends(get_table_service),
+):
+    """Respond to a table invite."""
+    try:
+        table = await table_service.get_table_by_id(table_id)
+        if not table:
+            raise ResourceNotFoundError("Table not found")
+
+        # Check if user is invited
+        user_is_invited = any(
+            player.user_id == str(current_user.id)
+            and player.status == PlayerStatusEnum.INVITED
+            for player in table.players
+        )
+        if not user_is_invited:
+            raise InvalidInputError("You are not invited to this table")
+
+        return await table_service.respond_to_invite_table(
+            table_id, str(current_user.id), status
+        )
+    except Exception as e:
+        raise DatabaseError(f"Failed to respond to invite: {str(e)}")
 
 
 @router.delete("/{table_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_table(table_id: str, current_user: UserResponse = Depends(get_current_user),
-                       db_client: AsyncIOMotorClient = Depends(get_database)):
-    if not ObjectId.is_valid(table_id):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid table ID")
-    existing_table = await table_handler.get_table_by_id(table_id=table_id, db_client=db_client)
-
-    if not existing_table:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Table not found")
-
-    if str(existing_table.creator_id) != str(current_user.id):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only the creator can delete the table")
+async def delete_table(
+    table_id: str,
+    current_user: UserResponse = Depends(get_current_user),
+    table_service: TableService = Depends(get_table_service),
+):
+    """Delete a table."""
     try:
-        await table_handler.delete_table(table_id=table_id, db_client=db_client)
-        updated_table = await table_handler.get_table_by_id(table_id=table_id, db_client=db_client)
-        # await sse_handler.send_table_update(table_id=table_id, data=updated_table)
-        return updated_table
+        table = await table_service.get_table_by_id(table_id)
+        if not table:
+            raise ResourceNotFoundError("Table not found")
+
+        # Check if user is the creator
+        if table.creator_id != str(current_user.id):
+            raise InvalidInputError("Only the creator can delete the table")
+
+        await table_service.delete_table(table_id)
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Table deletion failed: {e}"
-        )
-
-
-@router.put("/{table_id}/invite", status_code=status.HTTP_200_OK, response_model=Optional[TableDBResponse])
-async def invite_user(
-        table_id: str,
-        friends: List[Dict] = Body(...),
-        current_user: UserResponse = Depends(get_current_user),
-        db_client: AsyncIOMotorClient = Depends(get_database)
-):
-    if not ObjectId.is_valid(table_id) or any(not ObjectId.is_valid(friend.get("user_id")) for friend in friends):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid table or friends ID")
-    existing_table = await table_handler.get_table_by_id(table_id=table_id, db_client=db_client)
-
-    if not existing_table:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Table not found")
-
-    if not existing_table.creator_id == str(current_user.id):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cant invite to table")
-
-    table_player_ids = {player.user_id for player in existing_table.players}
-    table_players = [player.model_dump() for player in existing_table.players]
-    for friend in friends:
-        friend_id = friend["user_id"]
-        if friend_id not in table_player_ids:
-            table_players.append(PlayerStatus(user_id=friend_id, username=friend["username"],
-                                              status=PlayerStatusEnum.INVITED.value).model_dump())
-    update_data = {"players": table_players}
-    await table_handler.update_table(table_id=table_id, update_data=update_data, db_client=db_client)
-    updated_table = await table_handler.get_table_by_id(table_id=table_id, db_client=db_client)
-    # await sse_handler.send_table_update(table_id=table_id, data=updated_table)
-    return updated_table
-
-
-@router.put("/{table_id}/{player_status}", status_code=status.HTTP_200_OK, response_model=Optional[TableDBResponse])
-async def respond_to_invite(
-        table_id: str,
-        player_status: PlayerStatusEnum,
-        current_user: UserResponse = Depends(get_current_user),
-        db_client: AsyncIOMotorClient = Depends(get_database)
-):
-    if not ObjectId.is_valid(table_id):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid table ID")
-
-    existing_table = await table_handler.get_table_by_id(table_id=table_id, db_client=db_client)
-    if not existing_table:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Table not found")
-
-    player_obj = [player for player in existing_table.players if player.user_id == str(current_user.id)]
-    if not player_obj:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cant join table")
-
-    await table_handler.respond_to_invite_table(table_id=table_id, player_id=str(current_user.id),
-                                                status=player_status, db_client=db_client)
-
-    if existing_table.game_id and existing_table.status == GameStatusEnum.IN_PROGRESS:
-        await game_handler.update_game_invite(game_id=existing_table.game_id, user=current_user, status=player_status,
-                                              db_client=db_client)
-
-    updated_table = await table_handler.get_table_by_id(table_id=table_id, db_client=db_client)
-    # await sse_handler.send_table_update(table_id=table_id, data=updated_table)
-    return updated_table
+        raise DatabaseError(f"Failed to delete table: {str(e)}")
