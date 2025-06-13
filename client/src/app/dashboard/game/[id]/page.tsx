@@ -69,7 +69,7 @@ export default function PokerGamePage() {
 	}
 
 	return (
-		<div className={styles.container}>
+		<>
 			<GameHeader
 				venue={game.venue}
 				date={game.date}
@@ -101,6 +101,6 @@ export default function PokerGamePage() {
 					onClose={handlePlayerClose}
 				/>
 			)}
-		</div>
+		</>
 	);
 }

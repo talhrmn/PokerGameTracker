@@ -37,3 +37,5 @@ export const ChartMetrics: Record<string, ChartProps> = {
     renderTooltip: (value) => `$${value.toFixed(2)}`,
   },
 };
+
+export const COLORS_LIST = ["#ff5733", "#33ff57", "#3357ff", "#ff33a8", "#a833ff"];

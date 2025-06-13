@@ -5,7 +5,7 @@ import Link from "next/link";
 import { BarChart3, Users, Trophy } from "lucide-react";
 
 import styles from "@/app/dashboard/main/components/quick-access-cards/styles.module.css";
-import { QuickAccessCardsProps } from "@/app/dashboard/main/components/quick-access-cards/types";
+import { QuickAccessCardsProps } from "./types";
 
 export default function QuickAccessCards({ cards }: QuickAccessCardsProps) {
 	const getIcon = (iconName: string) => {
@@ -37,14 +37,12 @@ export default function QuickAccessCards({ cards }: QuickAccessCardsProps) {
 						<h3 className={styles.cardTitle}>{card.title}</h3>
 					</div>
 					<p className={styles.cardDescription}>{card.description}</p>
-					<div className={styles.cardAction}>
-						<Link
-							href={card.link}
-							className={`${styles.button} ${card.buttonColor}`}
-						>
-							{card.linkText}
-						</Link>
-					</div>
+					<Link
+						href={card.link}
+						className={`${styles.button} ${styles[card.buttonColor]}`}
+					>
+						{card.linkText}
+					</Link>
 				</div>
 			))}
 		</div>

@@ -9,7 +9,7 @@ export const ACCESS_CARDS: AccessCard[] = [
     linkText: "View Statistics",
     gradientFrom: "purple500",
     gradientTo: "indigo600",
-    buttonColor: "purple600",
+    buttonColor: "purple500",
   },
   {
     title: "Poker Trendings",
@@ -19,7 +19,7 @@ export const ACCESS_CARDS: AccessCard[] = [
     linkText: "View Trends",
     gradientFrom: "blue500",
     gradientTo: "cyan600",
-    buttonColor: "blue600",
+    buttonColor: "blue500",
   },
   {
     title: "Poker Buddies",
@@ -29,6 +29,6 @@ export const ACCESS_CARDS: AccessCard[] = [
     linkText: "Manage Friends",
     gradientFrom: "red500",
     gradientTo: "orange600",
-    buttonColor: "red600",
+    buttonColor: "red500",
   },
 ];

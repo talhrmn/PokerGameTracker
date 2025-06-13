@@ -57,7 +57,7 @@ const LineChart: React.FC<LineChartProps> = ({
 					theme={{
 						grid: {
 							line: {
-								stroke: "#2d3748",
+								stroke: "black",
 								strokeWidth: 1,
 								strokeDasharray: "4 4",
 							},
@@ -83,13 +83,13 @@ const LineChart: React.FC<LineChartProps> = ({
 							legend: {
 								text: {
 									fontSize: 12,
-									fill: "#a0aec0",
+									fill: "black",
 								},
 							},
 							ticks: {
 								text: {
 									fontSize: 12,
-									fill: "#a0aec0",
+									fill: "black",
 								},
 								line: {
 									stroke: "#2d3748",

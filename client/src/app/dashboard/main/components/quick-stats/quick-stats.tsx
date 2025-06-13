@@ -20,6 +20,7 @@ export default function QuickStats({
 			icon: DollarSign,
 			change: monthly_changes.profit_change || "",
 			changeType: getChangeType(monthly_changes.profit_change),
+			colorClass: styles.purpleShadow,
 		},
 		{
 			id: 2,
@@ -28,6 +29,7 @@ export default function QuickStats({
 			icon: Trophy,
 			change: monthly_changes.win_rate_change || "",
 			changeType: getChangeType(monthly_changes.win_rate_change),
+			colorClass: styles.blueShadow,
 		},
 		{
 			id: 3,
@@ -36,6 +38,7 @@ export default function QuickStats({
 			icon: Table,
 			change: monthly_changes.tables_change || "",
 			changeType: getChangeType(monthly_changes.tables_change),
+			colorClass: styles.redShadow,
 		},
 		{
 			id: 4,
@@ -44,13 +47,14 @@ export default function QuickStats({
 			icon: Clock,
 			change: monthly_changes.hours_change || "",
 			changeType: getChangeType(monthly_changes.hours_change),
+			colorClass: styles.orangeShadow,
 		},
 	] as QuickStat[];
 
 	return (
 		<div className={styles.statsGrid}>
 			{stats.map((stat) => (
-				<div key={stat.id} className={styles.statCard}>
+				<div key={stat.id} className={`${styles.statCard} ${stat.colorClass}`}>
 					<div className={styles.statHeader}>
 						<div className={styles.iconContainer}>
 							<stat.icon className={styles.icon} />

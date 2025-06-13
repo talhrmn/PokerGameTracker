@@ -1,6 +1,11 @@
 "use client";
 
-import { COOKIE_EXPERATION_IN_DAYS, DASHBOARD_ROUTE } from "@/app/auth/consts";
+import {
+	AuthTabType,
+	COOKIE_EXPERATION_IN_DAYS,
+	DASHBOARD_ROUTE,
+	DEFAULT_AUTH_TAB,
+} from "@/app/auth/consts";
 import { logoutUser, useAuthQuery } from "./auth-queries";
 
 import { EMPTY_USER } from "@/app/auth/context/consts";
@@ -27,6 +32,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [token, setToken] = useState<string | null>(
 		Cookies.get("token") || null
 	);
+
+	const [activeForm, setActiveForm] = useState<AuthTabType>(() => {
+		if (!pathname) return DEFAULT_AUTH_TAB.tabName as AuthTabType;
+
+		// Check if pathname contains login or signup
+		if (pathname.includes("login")) return "login";
+		if (pathname.includes("signup")) return "signup";
+
+		// Default fallback
+		return DEFAULT_AUTH_TAB.tabName as AuthTabType;
+	});
 
 	const {
 		data: user = EMPTY_USER,
@@ -79,6 +95,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 				loading: loading,
 				handleSuccess,
 				handleError,
+				activeForm,
+				setActiveForm,
 			}}
 		>
 			{children}

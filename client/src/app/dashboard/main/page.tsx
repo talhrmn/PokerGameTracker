@@ -27,7 +27,7 @@ export default function Main() {
 						<h2 className={styles.welcomeText}>
 							Welcome back, {user.username}!
 						</h2>
-						<p className={styles.subtitle}>Lets manage your games together!</p>
+						<p className={styles.subtitle}>Manage you games</p>
 					</div>
 					<div className={styles.headerRight}>
 						<div className={styles.headerButtons}>

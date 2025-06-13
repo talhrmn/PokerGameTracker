@@ -1,106 +1,87 @@
+/* styles.module.css */
+
+/* Container for the header: 
+   You can adjust background-color or remove it if the page background already provides context.
+*/
 .header {
-  display: flex;
-  flex-direction: column;
-  margin: 2rem;
+	width: 100%;
+	/* Optional: if you want a card look, uncomment the next lines */
+	/* background-color: #ffffff; */
+	/* border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem 2rem; */
+	margin-bottom: 1.5rem;
+
+	/* If header is flush against page background, you might omit background/box-shadow. 
+     If you want it inset, use the above. For now, assume it sits on a light-gray page. */
+	padding: 1rem 1.5rem;
+	box-sizing: border-box;
 }
 
+/* Flex container: space between left and right, wrap on small screens */
 .headerContent {
-  width: -webkit-fill-available;
-  display: flex;
-  flex-wrap: nowrap;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 1rem;
 }
 
+/* Left side: greeting text */
 .headerLeft {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
+	display: flex;
+	flex-direction: column;
 }
 
+/* Right side: buttons or actions */
 .headerRight {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex-wrap: nowrap;
-  justify-content: space-between;
+	display: flex;
+	align-items: right;
+	/* On small screens, this may wrap below; gap handled by headerContent */
 }
 
+/* Welcome text: clear, dark, no gradient */
 .welcomeText {
-  font-size: 2rem;
-  font-weight: 800;
-  line-height: 1.75rem;
-  color: white;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(to right, white, #a0a0a0);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+	font-size: 1.75rem; /* ~28px */
+	font-weight: bold;
+	line-height: 2;
+	color: #111111;
+	margin-bottom: 0.5rem; /* reset default margins */
 }
 
+/* Subtitle: smaller, muted */
 .subtitle {
-  margin-top: 0.25rem;
-  font-size: 1.25rem;
-  color: #a0a0a0;
+	margin-top: 0.25rem;
+	font-size: 1rem; /* ~16px */
+	color: #555555;
+	margin-bottom: 0; /* reset if any */
 }
 
+/* Button container: place for one or more buttons */
 .headerButtons {
-  margin-top: 1.5rem;
-  display: flex;
-  gap: 0.75rem;
+	display: flex;
+	gap: 0.75rem;
+	/* If you want the buttons aligned baseline: */
+	align-items: center;
+	transition: scale 0.3s ease-in-out;
 }
 
 .buttonIcon {
-  margin-right: 0.5rem;
-  height: 1rem;
-  width: 1rem;
+	margin-right: 0.5rem;
+	height: 1rem;
+	width: 1rem;
 }
 
 .mainContent {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1.5rem;
 }
 
 .recentGamesSection {
-  grid-column: span 1;
+	grid-column: span 1;
 }
 
 .quickAccessSection {
-  grid-column: span 1;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
-  }
-}
-
-@media (min-width: 768px) {
-  .header {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .headerButtons {
-    margin-top: 0;
-    margin-left: 1rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .mainContent {
-    grid-template-columns: 2fr 1fr;
-  }
-
-  .recentGamesSection {
-    grid-column: span 1;
-  }
+	grid-column: span 1;
 }

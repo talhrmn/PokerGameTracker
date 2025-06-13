@@ -2,7 +2,7 @@
 
 import LineChart from "@/app/dashboard/components/line-chart/line-chart";
 import { NivoSeries } from "@/app/dashboard/components/line-chart/types";
-import { ChartMetrics } from "@/app/dashboard/trendings/consts";
+import { ChartMetrics, COLORS_LIST } from "@/app/dashboard/trendings/consts";
 import styles from "@/app/dashboard/trendings/styles.module.css";
 import { useTrendingsQuery } from "@/app/dashboard/trendings/trendings-queries";
 import { TrendsProps } from "@/app/dashboard/trendings/types";
@@ -10,7 +10,16 @@ import { TrendsProps } from "@/app/dashboard/trendings/types";
 const TrendingsPage = () => {
 	const { data, isLoading: loading, isError: error } = useTrendingsQuery();
 
-	const colorsList = ["#ff5733", "#33ff57", "#3357ff", "#ff33a8", "#a833ff"];
+	if (loading)
+		return <div className={styles.loading}>Loading statistics...</div>;
+	if (error)
+		return <div className={styles.error}>Error loading data: {error}</div>;
+
+	const avgPotSize = data?.average_pot_size.toFixed(1) || "0";
+
+	const avgWinRate = (data?.average_win_rate || 0) * 100;
+
+	const avgDuration = data?.average_hours_played.toFixed(1) || "0.0";
 
 	const lineChartData = !data
 		? []
@@ -36,7 +45,7 @@ const TrendingsPage = () => {
 						});
 
 						ChartMetrics[metric].colors = Array.from(users).map(
-							(user, index) => colorsList[index % colorsList.length]
+							(user, index) => COLORS_LIST[index % COLORS_LIST.length]
 						);
 						seriesData = Array.from(users).map((user) => ({
 							id: user,
@@ -75,37 +84,31 @@ const TrendingsPage = () => {
 					};
 				});
 
-	if (loading) {
-		return <div className={styles.loading}>Loading statistics...</div>;
-	}
-
-	if (error) {
-		return <div className={styles.error}>Error loading data: {error}</div>;
-	}
-
 	return (
-		<div className={styles.container}>
+		<div className={styles.trendsContainer}>
 			<h1 className={styles.title}>Game Trends Over Time</h1>
 
 			{/* Summary Stats Cards */}
 			<div className={styles.statsGrid}>
 				<div className={styles.statCard}>
-					<h3>Average Pot Size </h3>
-					<div className={styles.statValue}>
-						{data?.average_pot_size.toFixed(1) || "0"}
+					<h3 className={styles.statTitle}>Average Pot Size </h3>
+					<div className={styles.statValueBase}>{avgPotSize}</div>
+				</div>
+				<div className={styles.statCard}>
+					<h3 className={styles.statTitle}>Average Win Rate</h3>
+					<div
+						className={`${styles.statValueBase} ${
+							avgWinRate >= 0
+								? styles.statValuePositive
+								: styles.statValueNegative
+						}`}
+					>
+						{avgWinRate.toFixed(1) || "0.0"}%
 					</div>
 				</div>
 				<div className={styles.statCard}>
-					<h3>Average Win Rate</h3>
-					<div className={styles.statValue}>
-						{((data?.average_win_rate || 0) * 100).toFixed(1) || "0.0"}%
-					</div>
-				</div>
-				<div className={styles.statCard}>
-					<h3>Average Hours Per Game</h3>
-					<div className={styles.statValue}>
-						{data?.average_hours_played.toFixed(1) || "0.0"}
-					</div>
+					<h3 className={styles.statTitle}>Average Hours Per Game</h3>
+					<div className={styles.statValueBase}>{avgDuration}</div>
 				</div>
 			</div>
 
