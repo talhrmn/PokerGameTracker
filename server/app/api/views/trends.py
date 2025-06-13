@@ -1,22 +1,21 @@
 from fastapi import APIRouter, Depends
-from motor.motor_asyncio import AsyncIOMotorClient
 
-from app.api.dependencies import get_database, get_current_user
-from app.handlers.games import game_handler
-from app.handlers.tables import table_handler
+from app.api.dependencies import get_current_user, get_game_service, get_table_service
 from app.schemas.trends import TrendsResponse
 from app.schemas.user import UserResponse
+from app.services.game_service import GameService
+from app.services.table_service import TableService
 
 router = APIRouter()
 
 
 @router.get("/", response_model=TrendsResponse)
 async def get_trends(current_user: UserResponse = Depends(get_current_user),
-                     db_client: AsyncIOMotorClient = Depends(get_database)) -> TrendsResponse:
-    games = await game_handler.get_games_for_player(player=current_user, db_client=db_client)
+                     table_service: TableService = Depends(get_table_service),
+                     game_service: GameService = Depends(get_game_service)) -> TrendsResponse:
+    games = await game_service.get_games_for_player(current_user)
     games.sort(key=lambda game: game.date)
-    tables = {game.id: await table_handler.get_table_by_id(table_id=game.table_id, db_client=db_client) for game in
-              games}
+    tables = {game.id: await table_service.get_by_id(str(game.table_id)) for game in games}
 
     pot_data, duration_data, cash_out_data, profit_data, buy_in_data, players_data = {}, {}, {}, {}, {}, {}
 

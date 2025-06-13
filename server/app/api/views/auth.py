@@ -1,27 +1,29 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
-from motor.motor_asyncio import AsyncIOMotorClient
 
-from app.api.dependencies import get_database
+from app.api.dependencies import get_user_service, get_auth_service
 from app.core.security import verify_password
-from app.handlers.auth import auth_handler
-from app.handlers.users import user_handler
 from app.schemas.auth import LoginResponse
-from app.schemas.user import UserCreate
+from app.schemas.user import UserInput
+from app.services.auth_service import AuthService
+from app.services.user_service import UserService
 
 router = APIRouter()
 
 
 @router.post("/register", response_model=LoginResponse, status_code=status.HTTP_201_CREATED)
-async def register_user(user_data: UserCreate, db_client: AsyncIOMotorClient = Depends(get_database)):
-    existing_username = await user_handler.get_user_by_username(username=user_data.username, db_client=db_client)
+async def register_user(
+        user_data: UserInput,
+        user_service: UserService = Depends(get_user_service),
+        auth_service: AuthService = Depends(get_auth_service)):
+    existing_username = await user_service.get_user_by_username(user_data.username)
     if existing_username:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Username already registered"
         )
 
-    existing_email = await user_handler.get_user_by_email(email=user_data.email, db_client=db_client)
+    existing_email = await user_service.get_user_by_email(str(user_data.email))
     if existing_email:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -29,9 +31,8 @@ async def register_user(user_data: UserCreate, db_client: AsyncIOMotorClient = D
         )
 
     try:
-        new_user = await user_handler.create_user(user_data=user_data, db_client=db_client)
-        login_response = await auth_handler.login_user(user=new_user, db_client=db_client)
-        return login_response
+        user = await user_service.create_user(user_data=user_data)
+        return auth_service.login_user(user.id)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -41,15 +42,15 @@ async def register_user(user_data: UserCreate, db_client: AsyncIOMotorClient = D
 
 @router.post("/login", response_model=LoginResponse)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(),
-                db_client: AsyncIOMotorClient = Depends(get_database)):
-    existing_user = await user_handler.get_user_by_username(username=form_data.username, db_client=db_client)
+                user_service: UserService = Depends(get_user_service),
+                auth_service: AuthService = Depends(get_auth_service)):
+    user = await user_service.get_user_by_username(form_data.username)
 
-    if not existing_user or not verify_password(form_data.password, existing_user.password_hash):
+    if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    login_response = await auth_handler.login_user(user=existing_user, db_client=db_client)
-    return login_response
+    return auth_service.login_user(user.id)

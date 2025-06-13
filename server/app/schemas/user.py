@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import List, Optional
 
 from pydantic import BaseModel, Field, EmailStr
@@ -27,10 +27,17 @@ class UserBase(BaseModel):
 
 
 class UserResponse(UserBase):
-    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    id: PyObjectId = Field(alias="_id")
+
+    model_config = {
+        "populate_by_name": True,
+        "json_encoders": {
+            PyObjectId: lambda v: str(v),
+        }
+    }
 
 
-class UserCreate(UserBase):
+class UserInput(UserBase):
     password: str
 
 
@@ -40,22 +47,24 @@ class UserUpdate(BaseModel):
     password: Optional[str] = None
     profile_pic: Optional[str] = None
 
-
-class UserDBInput(UserBase):
-    password_hash: str
+class UserDBBase(UserBase):
     profile_pic: Optional[str] = None
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=datetime.now(UTC))
     last_login: Optional[datetime] = None
     stats: UserStats = Field(default_factory=UserStats)
     monthly_stats: List[MonthlyStats] = []
     friends: List[PyObjectId] = []
 
+class UserDBInput(UserDBBase):
+    password_hash: str
 
-class UserDBResponse(UserDBInput):
+
+class UserDBOutput(UserDBBase):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
 
     model_config = {
         "populate_by_name": True,
         "arbitrary_types_allowed": True,
-        "json_encoders": {PyObjectId: str}
+        "json_encoders": {PyObjectId: str},
+        "extra": "ignore"
     }
