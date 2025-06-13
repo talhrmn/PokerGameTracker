@@ -1,5 +1,3 @@
-# app/services/base.py
-
 import logging
 from typing import Generic, TypeVar, Optional, List
 

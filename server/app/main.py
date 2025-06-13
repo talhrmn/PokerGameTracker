@@ -3,9 +3,18 @@ from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import ValidationError
+from bson.errors import InvalidId
 
 from app.api.api import api_router
 from app.core.config import settings
+from app.core.error_handlers import (
+    app_exception_handler,
+    validation_exception_handler,
+    invalid_id_exception_handler,
+    general_exception_handler
+)
+from app.core.exceptions import AppException
 from app.db.mongo_client import connect_to_mongo, close_mongo_connection
 
 
@@ -24,6 +33,12 @@ app = FastAPI(
     debug=settings.DEBUG,
     lifespan=lifespan
 )
+
+# Add exception handlers
+app.add_exception_handler(AppException, app_exception_handler)
+app.add_exception_handler(ValidationError, validation_exception_handler)
+app.add_exception_handler(InvalidId, invalid_id_exception_handler)
+app.add_exception_handler(Exception, general_exception_handler)
 
 app.add_middleware(
     CORSMiddleware,

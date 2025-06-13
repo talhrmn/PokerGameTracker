@@ -1,47 +1,78 @@
-# app/services/table_service.py
-
 import logging
 from datetime import datetime, UTC
 from typing import List, Optional, Dict
 
-from fastapi import HTTPException, status
-
+from app.core.exceptions import (
+    DatabaseException,
+    NotFoundException,
+    ValidationException,
+    BusinessRuleException,
+    PermissionDeniedException
+)
 from app.repositories.table_repository import TableRepository
 from app.schemas.table import TableBase, TableDBInput, TableDBOutput, PlayerStatusEnum, PlayerStatus
-from app.schemas.user import UserResponse  # or appropriate user schema
+from app.schemas.user import UserResponse
 from app.services.base import BaseService
 
 
 class TableService(BaseService[TableDBInput, TableDBOutput]):
     """
-    Service layer for table business logic.
+    Service for table-related business logic.
+    
+    This service handles all table-related operations, including:
+    - Table creation and management
+    - Player invitations and status updates
+    - Table status management
+    - Table deletion and cancellation
+    
+    Type Parameters:
+        TableDBInput: Pydantic model for table input/creation
+        TableDBOutput: Pydantic model for table responses
     """
 
     def __init__(self, repository: TableRepository):
+        """
+        Initialize the table service.
+        
+        Args:
+            repository: TableRepository instance for database operations
+        """
         super().__init__(repository)
         self.repository = repository
         self.logger = logging.getLogger(self.__class__.__name__)
 
     async def create_table(self, table_data: TableBase, current_user: UserResponse) -> TableDBOutput:
-        initial_player = PlayerStatus(
-            user_id=current_user.id,
-            username=current_user.username,
-            status=PlayerStatusEnum.CONFIRMED
-        )
-
-        table_input = TableDBInput(
-            **table_data.model_dump(by_alias=True),
-            creator_id=current_user.id,
-            players=[initial_player],
-            created_at=datetime.now(UTC),
-            updated_at=datetime.now(UTC)
-        )
+        """
+        Create a new table with the current user as the creator and first player.
+        
+        Args:
+            table_data: The table data to create
+            current_user: The user creating the table
+            
+        Returns:
+            TableDBOutput: The created table
+            
+        Raises:
+            DatabaseException: If there's an error creating the table
+        """
         try:
-            created = await self.repository.create(table_input)
+            initial_player = PlayerStatus(
+                user_id=current_user.id,
+                username=current_user.username,
+                status=PlayerStatusEnum.CONFIRMED
+            )
+
+            table_input = TableDBInput(
+                **table_data.model_dump(by_alias=True),
+                creator_id=current_user.id,
+                players=[initial_player],
+                created_at=datetime.now(UTC),
+                updated_at=datetime.now(UTC)
+            )
+            return await self.repository.create(table_input)
         except Exception as e:
             self.logger.error(f"Error creating table: {e}")
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Table creation failed")
-        return created
+            raise DatabaseException(detail="Table creation failed")
 
     async def get_tables(
             self,
@@ -51,23 +82,62 @@ class TableService(BaseService[TableDBInput, TableDBOutput]):
             limit: int = 100
     ) -> List[TableDBOutput]:
         """
-        List tables where current_user is a player, optionally filter by status.
+        Get tables where the current user is a player.
+        
+        Args:
+            current_user: The user to get tables for
+            table_status: Optional status to filter by
+            skip: Number of records to skip
+            limit: Maximum number of records to return
+            
+        Returns:
+            List[TableDBOutput]: List of tables matching the criteria
+            
+        Raises:
+            DatabaseException: If there's an error fetching tables
         """
-        tables = await self.repository.list_for_user(str(current_user.id), status=table_status, skip=skip, limit=limit)
-        return tables
+        try:
+            return await self.repository.list_for_user(
+                str(current_user.id),
+                status=table_status,
+                skip=skip,
+                limit=limit
+            )
+        except Exception as e:
+            raise DatabaseException(detail=f"Failed to get tables: {str(e)}")
 
     async def update_table(self, table_id: str, update_data: Dict) -> Optional[TableDBOutput]:
         """
-        Update arbitrary fields of a table (e.g., name, venue). Add updated_at timestamp.
+        Update table fields.
+        
+        Args:
+            table_id: The ID of the table to update
+            update_data: Dictionary of fields to update
+            
+        Returns:
+            Optional[TableDBOutput]: The updated table if successful, None if no updates
+            
+        Raises:
+            NotFoundException: If table not found
+            DatabaseException: If there's an error updating the table
         """
-        if not update_data:
-            return None
+        try:
+            if not update_data:
+                return None
 
-        update_data["updated_at"] = datetime.now(UTC)
-        updated = await self.repository.update(table_id, update_data)
-        if not updated:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to update table")
-        return updated
+            table = await self.get_by_id(table_id)
+            if not table:
+                raise NotFoundException(detail="Table not found")
+
+            update_data["updated_at"] = datetime.now(UTC)
+            updated = await self.update(table_id, update_data)
+            if not updated:
+                raise DatabaseException(detail="Failed to update table")
+            return updated
+        except NotFoundException:
+            raise
+        except Exception as e:
+            raise DatabaseException(detail=f"Failed to update table: {str(e)}")
 
     async def respond_to_invite(
             self,
@@ -76,34 +146,67 @@ class TableService(BaseService[TableDBInput, TableDBOutput]):
             table_status: PlayerStatusEnum
     ) -> TableDBOutput:
         """
-        A user responds to an invite: change their status in the table.
+        Update a player's status in response to a table invitation.
+        
+        Args:
+            table_id: The ID of the table
+            player_id: The ID of the player responding
+            table_status: The new status for the player
+            
+        Returns:
+            TableDBOutput: The updated table
+            
+        Raises:
+            NotFoundException: If table not found or player not in table
+            DatabaseException: If there's an error updating the status
         """
-        # Optionally: check that status is one of allowed responses, and that the table exists
-        table = await self.get_by_id(table_id)
-        # Check that player_id is indeed in the players array
-        found = any(str(p.user_id) == player_id for p in table.players)
-        if not found:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Player not found in table")
-        # Update status
-        updated = await self.repository.respond_to_invite(table_id, player_id, table_status)
-        if not updated:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to respond to invite")
-        return updated
+        try:
+            table = await self.get_by_id(table_id)
+            if not table:
+                raise NotFoundException(detail="Table not found")
+
+            found = any(str(p.user_id) == player_id for p in table.players)
+            if not found:
+                raise NotFoundException(detail="Player not found in table")
+
+            updated = await self.repository.respond_to_invite(table_id, player_id, table_status)
+            if not updated:
+                raise DatabaseException(detail="Failed to respond to invite")
+            return updated
+        except NotFoundException:
+            raise
+        except Exception as e:
+            raise DatabaseException(detail=f"Failed to respond to invite: {str(e)}")
 
     async def delete_table(self, table_id: str, game_count: int) -> None:
         """
-        Delete or cancel a table. If game_count > 0, cancel; else delete.
+        Delete or cancel a table based on game count.
+        
+        Args:
+            table_id: The ID of the table
+            game_count: Number of games associated with the table
+            
+        Raises:
+            NotFoundException: If table not found
+            DatabaseException: If there's an error deleting/canceling the table
         """
-        # Optionally: check table exists
-        table = await self.get_by_id(table_id)  # raises 404 if not exists
-        if game_count > 0:
-            ok = await self.repository.delete_or_cancel(table_id, cancel=True)
-            if not ok:
-                raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to cancel table")
-        else:
-            ok = await self.repository.delete_or_cancel(table_id, cancel=False)
-            if not ok:
-                raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to delete table")
+        try:
+            table = await self.get_by_id(table_id)
+            if not table:
+                raise NotFoundException(detail="Table not found")
+
+            if game_count > 0:
+                ok = await self.repository.delete_or_cancel(table_id, cancel=True)
+                if not ok:
+                    raise DatabaseException(detail="Failed to cancel table")
+            else:
+                ok = await self.repository.delete_or_cancel(table_id, cancel=False)
+                if not ok:
+                    raise DatabaseException(detail="Failed to delete table")
+        except NotFoundException:
+            raise
+        except Exception as e:
+            raise DatabaseException(detail=f"Failed to delete/cancel table: {str(e)}")
 
     async def invite_players(
             self,
@@ -112,15 +215,36 @@ class TableService(BaseService[TableDBInput, TableDBOutput]):
             invitees: List[Dict]
     ) -> TableDBOutput:
         """
-        Business logic to invite a new player: add to players array with status pending (or similar).
+        Invite new players to a table.
+        
+        Args:
+            table_id: The ID of the table
+            inviter_user: The user sending the invitations
+            invitees: List of users to invite
+            
+        Returns:
+            TableDBOutput: The updated table
+            
+        Raises:
+            NotFoundException: If table not found
+            PermissionDeniedException: If inviter is not the table creator
+            DatabaseException: If there's an error inviting players
         """
-        # Ensure table exists
-        table = await self.get_by_id(table_id)
-        # Only creator or certain roles may invite; implement your permission logic:
-        if str(table.creator_id) != str(inviter_user.id):
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only creator can invite players")
-        # Check invitee not already in players
-        table_player_ids = {player.user_id for player in table.players}
-        invitees_not_in_table = [p for p in invitees if p.get("user_id") not in table_player_ids]
-        updated = await self.repository.invite_players(table_id, invitees_not_in_table)
-        return updated
+        try:
+            table = await self.get_by_id(table_id)
+            if not table:
+                raise NotFoundException(detail="Table not found")
+
+            if str(table.creator_id) != str(inviter_user.id):
+                raise PermissionDeniedException(detail="Only creator can invite players")
+
+            table_player_ids = {player.user_id for player in table.players}
+            invitees_not_in_table = [p for p in invitees if p.get("user_id") not in table_player_ids]
+            updated = await self.repository.invite_players(table_id, invitees_not_in_table)
+            if not updated:
+                raise DatabaseException(detail="Failed to invite players")
+            return updated
+        except (NotFoundException, PermissionDeniedException):
+            raise
+        except Exception as e:
+            raise DatabaseException(detail=f"Failed to invite players: {str(e)}")
