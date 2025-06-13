@@ -23,7 +23,6 @@ export const useGameEvents = (
 		eventSource.onmessage = (event) => {
 			try {
 				const updatedGame = JSON.parse(event.data);
-				// console.log("Game update received:", updatedGame);
 				queryClient.setQueryData(["game"], updatedGame);
 				onGameUpdate(updatedGame);
 			} catch (err) {

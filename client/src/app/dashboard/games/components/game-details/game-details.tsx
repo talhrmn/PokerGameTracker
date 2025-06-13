@@ -82,8 +82,6 @@ const GameDetailsModal: React.FC<GameDetailsProps> = ({
 		}, [] as NotableHandsDetailProps[])
 		.sort((handA, handB) => handB.amount_won - handA.amount_won);
 
-	console.log("notableHandsData", notableHandsData);
-
 	return (
 		<div className={styles.modalOverlay} onClick={onClose}>
 			<div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
