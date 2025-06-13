@@ -1,8 +1,8 @@
 "use client";
 
-import LoginForm from "@/app/auth/components/login-form";
-import SignUpForm from "@/app/auth/components/register-form";
-import { useAuth } from "@/app/auth/context/context";
+import LoginForm from "@/features/auth/components/login-form";
+import SignUpForm from "@/features/auth/components/signup-form";
+import { useAuth } from "@/features/auth/contexts/context";
 
 const AuthPage = () => {
 	const { activeForm } = useAuth();

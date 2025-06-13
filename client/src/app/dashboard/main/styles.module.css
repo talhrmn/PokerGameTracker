@@ -1,24 +1,10 @@
-/* styles.module.css */
-
-/* Container for the header: 
-   You can adjust background-color or remove it if the page background already provides context.
-*/
 .header {
 	width: 100%;
-	/* Optional: if you want a card look, uncomment the next lines */
-	/* background-color: #ffffff; */
-	/* border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    padding: 1.5rem 2rem; */
 	margin-bottom: 1.5rem;
-
-	/* If header is flush against page background, you might omit background/box-shadow. 
-     If you want it inset, use the above. For now, assume it sits on a light-gray page. */
 	padding: 1rem 1.5rem;
 	box-sizing: border-box;
 }
 
-/* Flex container: space between left and right, wrap on small screens */
 .headerContent {
 	display: flex;
 	justify-content: space-between;
@@ -27,41 +13,33 @@
 	gap: 1rem;
 }
 
-/* Left side: greeting text */
 .headerLeft {
 	display: flex;
 	flex-direction: column;
 }
-
-/* Right side: buttons or actions */
 .headerRight {
 	display: flex;
 	align-items: right;
-	/* On small screens, this may wrap below; gap handled by headerContent */
 }
 
-/* Welcome text: clear, dark, no gradient */
 .welcomeText {
-	font-size: 1.75rem; /* ~28px */
+	font-size: 1.75rem;
 	font-weight: bold;
 	line-height: 2;
 	color: #111111;
-	margin-bottom: 0.5rem; /* reset default margins */
+	margin-bottom: 0.5rem;
 }
 
-/* Subtitle: smaller, muted */
 .subtitle {
 	margin-top: 0.25rem;
-	font-size: 1rem; /* ~16px */
+	font-size: 1rem;
 	color: #555555;
-	margin-bottom: 0; /* reset if any */
+	margin-bottom: 0;
 }
 
-/* Button container: place for one or more buttons */
 .headerButtons {
 	display: flex;
 	gap: 0.75rem;
-	/* If you want the buttons aligned baseline: */
 	align-items: center;
 	transition: scale 0.3s ease-in-out;
 }
@@ -72,10 +50,18 @@
 	width: 1rem;
 }
 
+.mainContainer {
+	padding: 1rem;
+}
+
 .mainContent {
 	display: grid;
 	grid-template-columns: 1fr;
 	gap: 1.5rem;
+}
+
+.quickStatsSection {
+	margin-bottom: 0.5rem;
 }
 
 .recentGamesSection {

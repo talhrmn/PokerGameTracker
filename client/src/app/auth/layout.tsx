@@ -5,11 +5,11 @@ import {
 	AuthTabType,
 	DEFAULT_AUTH_TAB,
 	TabItems,
-} from "@/app/auth/consts";
-import { useAuth } from "@/app/auth/context/context";
+} from "@/features/auth/consts";
+import { useAuth } from "@/features/auth/contexts/context";
 import { Tabs } from "antd";
 import React from "react";
-import styles from "./styles.module.css"; // adjust path if needed
+import styles from "./styles.module.css";
 
 const AuthLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const { activeForm, setActiveForm } = useAuth();

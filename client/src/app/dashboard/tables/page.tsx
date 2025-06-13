@@ -1,12 +1,15 @@
 "use client";
 
-import { useAuth } from "@/app/auth/context/context";
-import GenericTable from "@/app/dashboard/components/generic-table/generic-table";
-import TableDetailsModal from "@/app/dashboard/tables/components/table-details/table-details";
+import { useAuth } from "@/features/auth/contexts/context";
+import GenericTable from "@/features/common/components/generic-table/generic-table";
+import TableDetailsModal from "@/features/dashboard/table/components/table-details/table-details";
 
-import { TABLE_TABS, tableColumns } from "@/app/dashboard/tables/consts";
-import { useFetchTablesQuery } from "@/app/dashboard/tables/tables-queries";
-import { Table } from "@/app/dashboard/tables/types";
+import {
+	TABLE_TABS,
+	tableColumns,
+} from "@/features/dashboard/table/consts/tables.consts";
+import { useFetchTablesQuery } from "@/features/dashboard/table/hooks/table.queries";
+import { Table } from "@/features/dashboard/table/types/tables.types";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function TablesPage() {

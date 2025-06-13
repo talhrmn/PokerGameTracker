@@ -1,17 +1,22 @@
 "use client";
 
-import GenericTable from "@/app/dashboard/components/generic-table/generic-table";
-import { FRIENDS_TABS, tableColumns } from "@/app/dashboard/friends/consts";
+import GenericTable from "@/features/common/components/generic-table/generic-table";
+import commonStyles from "@/features/common/styles.module.css";
+import {
+	FRIENDS_TABS,
+	tableColumns,
+} from "@/features/dashboard/friends/consts";
 import {
 	// useAddFriend,
 	useFriendsQuery,
-	// useRemoveFriend,
-	// useSearchFriend,
-} from "@/app/dashboard/friends/friends-queries";
-import styles from "@/app/dashboard/friends/styles.module.css";
-import { FriendsProps, FriendsTabKey } from "@/app/dashboard/friends/types";
+} from "@/features/dashboard/friends/hooks/friends.queries";
+import {
+	FriendsProps,
+	FriendsTabKey,
+} from "@/features/dashboard/friends/types";
 import { Check, MailPlus, Trash2, X } from "lucide-react";
 import { useCallback, /* useEffect, */ useMemo, useState } from "react";
+import styles from "./styles.module.css";
 
 export default function Friends() {
 	const [activeTab, setActiveTab] = useState<string>(FRIENDS_TABS.friends.key);
@@ -19,7 +24,7 @@ export default function Friends() {
 	const [searchTerm, setSearchTerm] = useState<string>("");
 	const [searchedFriends, setSearchedFriends] = useState<FriendsProps[]>([]);
 
-	const { data, isError } = useFriendsQuery();
+	const { data, isLoading, isError } = useFriendsQuery();
 
 	// const searchFriendMutation = useSearchFriend();
 
@@ -119,6 +124,15 @@ export default function Friends() {
 	//   setSelectedTable(table);
 	// };
 
+	if (isLoading) {
+		return (
+			<div className={commonStyles.loadingContainer}>
+				<div className={commonStyles.loadingSpinner}></div>
+				<p>Loading game data...</p>
+			</div>
+		);
+	}
+
 	if (isError) return <div>Error loading friends data</div>;
 
 	const handleTabChange = (tabName: string) => {
@@ -127,7 +141,7 @@ export default function Friends() {
 	};
 
 	return (
-		<div>
+		<>
 			<GenericTable
 				data={friendsList}
 				columns={tableColumns}
@@ -148,6 +162,6 @@ export default function Friends() {
             onUpdateTables={fetchTables}
           />
         )} */}
-		</div>
+		</>
 	);
 }
