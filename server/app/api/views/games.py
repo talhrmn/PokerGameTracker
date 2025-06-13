@@ -284,6 +284,7 @@ async def update_end_game(
         game_id: str,
         current_user: UserResponse = Depends(get_current_user),
         game_service: GameService = Depends(get_game_service),
+        table_service: TableService = Depends(get_table_service),
         sse_service: SSEService = Depends(get_sse_service)
 ) -> GameDBOutput:
     """
@@ -309,6 +310,7 @@ async def update_end_game(
         raise PermissionDeniedException(detail="Only game creator can end the game")
 
     updated_game = await game_service.end_game(game_id)
+    await table_service.update_table(str(updated_game.table_id), {"status": GameStatusEnum.COMPLETED})
 
     try:
         await sse_service.send_game_update(game_id=game_id, data=updated_game)

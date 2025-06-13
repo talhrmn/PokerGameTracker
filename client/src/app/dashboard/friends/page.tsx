@@ -6,12 +6,12 @@ import {
 	// useAddFriend,
 	useFriendsQuery,
 	// useRemoveFriend,
-	useSearchFriend,
+	// useSearchFriend,
 } from "@/app/dashboard/friends/friends-queries";
 import styles from "@/app/dashboard/friends/styles.module.css";
 import { FriendsProps, FriendsTabKey } from "@/app/dashboard/friends/types";
 import { Check, MailPlus, Trash2, X } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, /* useEffect, */ useMemo, useState } from "react";
 
 export default function Friends() {
 	const [activeTab, setActiveTab] = useState<string>(FRIENDS_TABS.friends.key);
@@ -21,7 +21,7 @@ export default function Friends() {
 
 	const { data, isError } = useFriendsQuery();
 
-	const searchFriendMutation = useSearchFriend();
+	// const searchFriendMutation = useSearchFriend();
 
 	// const addFriendMutation = useAddFriend();
 	// const removeFriendMutation = useRemoveFriend();
@@ -33,16 +33,17 @@ export default function Friends() {
 			console.log("friend_id", friend_id);
 			// addFriendMutation.mutate(friend_id);
 		},
-		// [addFriendMutation]
 		[]
+		// [addFriendMutation]
 	);
+
 	const removeFriend = useCallback(
 		async (friend_id: string) => {
 			console.log("friend_id", friend_id);
 			// removeFriendMutation.mutate(friend_id);
 		},
-		// [removeFriendMutation]
 		[]
+		// [removeFriendMutation]
 	);
 
 	const friendActions = useCallback(
@@ -67,22 +68,24 @@ export default function Friends() {
 		[removeFriend, addFriend]
 	);
 
-	useEffect(() => {
-		const fetchSearchResults = async () => {
-			if (activeTab === FRIENDS_TABS.friendInvites.key && searchTerm) {
-				const newFriends = await searchFriendMutation.mutateAsync(searchTerm);
-				const mappedFriends = newFriends.map((item: FriendsProps) => {
-					return {
-						...item,
-						actions: friendActions(activeTab, item._id, true),
-					};
-				});
-				setSearchedFriends(mappedFriends);
-			} else setSearchedFriends([]);
-		};
+	// useEffect(() => {
+	// 	const fetchSearchResults = async () => {
+	// 		if (activeTab === FRIENDS_TABS.friendInvites.key && searchTerm) {
+	// 			const newFriends = await searchFriendMutation.mutateAsync(searchTerm);
+	// 			const mappedFriends = newFriends.map((item: FriendsProps) => ({
+	// 				...item,
+	// 				actions: friendActions(activeTab, item._id, true),
+	// 			}));
+	// 			if (JSON.stringify(mappedFriends) !== JSON.stringify(searchedFriends)) {
+	// 				setSearchedFriends(mappedFriends);
+	// 			}
+	// 		} else {
+	// 			setSearchedFriends([]);
+	// 		}
+	// 	};
 
-		fetchSearchResults();
-	}, [searchTerm, activeTab, friendActions, searchFriendMutation]);
+	// 	fetchSearchResults();
+	// }, [searchTerm, activeTab, friendActions, searchFriendMutation]);
 
 	const friendsList = useMemo(() => {
 		if (!data) return [] as FriendsProps[];
