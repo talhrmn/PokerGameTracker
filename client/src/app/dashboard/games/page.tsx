@@ -57,7 +57,7 @@ export default function Games() {
 			<GenericTable
 				data={games}
 				columns={GAME_COLUMNS}
-				title="Recent Games"
+				title="Games"
 				viewAllLink="/games"
 				titleBarColor="#f56565"
 				onRowClick={handleRowClick}

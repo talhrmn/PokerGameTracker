@@ -1,3 +1,4 @@
+import { AuthTabType } from "@/app/auth/consts";
 import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
@@ -17,6 +18,8 @@ export interface AuthContextType {
   loading: boolean;
   handleSuccess: (access_token: string) => void;
   handleError: (err: AxiosError) => void;
+  activeForm: AuthTabType;
+  setActiveForm: (tab: AuthTabType) => void;
 }
 
 export interface AccessType {

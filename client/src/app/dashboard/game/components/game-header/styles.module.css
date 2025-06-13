@@ -1,83 +1,73 @@
 .header {
-  background-color: #152638;
-  padding: 16px 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	margin-top: 1rem;
+	padding: 16px 24px;
+	border-radius: 12px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .headerContent {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
 }
 
 .backButton {
-  align-self: flex-start;
-  background: none;
-  border: none;
-  color: #3182ce;
-  cursor: pointer;
-  font-size: 0.9rem;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  transition: color 0.2s;
+	align-self: flex-start;
+	background: none;
+	border: none;
+	color: black;
+	cursor: pointer;
+	font-size: 1rem;
+	font-weight: 500;
+	padding: 0;
+	display: flex;
+	align-items: center;
+	transition: color 0.2s;
+	margin-right: 16px;
 }
 
 .backButton:hover {
-  color: #4299e1;
-  text-decoration: underline;
+	text-decoration: underline;
 }
 
 .gameInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	margin-top: 1rem;
+	flex-grow: 1;
 }
 
 .title {
-  margin: 0;
-  font-size: 1.8rem;
-  color: #f0f0f0;
+	margin: 0;
+	font-size: 1.8rem;
+	font-weight: bold;
+	color: black;
 }
 
 .meta {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 12px;
 }
 
 .date {
-  color: #8a9bac;
-  font-size: 0.9rem;
+	color: black;
+	font-size: 0.9rem;
 }
 
 .status {
-  font-size: 0.8rem;
-  padding: 4px 8px;
-  border-radius: 4px;
-  color: white;
-  font-weight: 500;
+	font-size: 0.8rem;
+	padding: 4px 8px;
+	border-radius: 4px;
+	color: black;
+	font-weight: bold;
 }
 
 .totalPot {
-  font-weight: bold;
-  color: #f0c14b;
-}
-
-@media (min-width: 768px) {
-  .headerContent {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .backButton {
-    margin-right: 16px;
-  }
-
-  .gameInfo {
-    flex-grow: 1;
-  }
+	font-weight: bold;
+	color: #e1a610;
 }

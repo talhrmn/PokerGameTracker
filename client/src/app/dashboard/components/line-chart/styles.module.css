@@ -1,27 +1,26 @@
 .chartContainer {
-	background-color: #1a202c;
-	border-radius: 8px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	/* background-color: #1a202c; */
+	border-radius: 0.5rem;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 	padding: 1.5rem;
 	margin-bottom: 0;
-	border: 1px solid #2d3748;
+	/* border: 1px solid #2d3748; */
 	height: 100%;
 	display: flex;
 	flex-direction: column;
 }
 
 .chartTitle {
-	color: #e2e8f0;
-	margin-top: 0;
-	margin-bottom: 1.25rem;
-	font-size: 1.25rem;
-	font-weight: 600;
+	margin: 0 0 1rem 0;
+	color: #111111;
+	font-size: 1.5rem;
+	font-weight: bold;
 	text-align: center;
 }
 
 .chartContent {
 	/* flex: 1; */
-	height: 350px;
+	height: 400px;
 	position: relative;
 }
 

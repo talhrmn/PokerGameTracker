@@ -26,7 +26,7 @@ export const TabItems = [
   },
 ];
 
-export type AuthTabType = keyof typeof AuthTab;
+export type AuthTabType = "login" | "signup";
 
 export const DEFAULT_AUTH_TAB = AuthTab.login;
 

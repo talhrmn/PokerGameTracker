@@ -1,16 +1,16 @@
 "use client";
 
+import {
+	INVALID_PASSWORD_MSG,
+	VALID_EMAIL_PATTERN,
+	VALID_PASSWORD_PATTERN,
+} from "@/app/auth/consts";
 import { useSignUpMutation } from "@/app/auth/context/auth-queries";
 import { useAuth } from "@/app/auth/context/context";
 import styles from "@/app/auth/styles.module.css";
 import { Button, Form, Input, message } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { useState } from "react";
-import {
-	INVALID_PASSWORD_MSG,
-	VALID_EMAIL_PATTERN,
-	VALID_PASSWORD_PATTERN,
-} from "@/app/auth/consts";
 
 const SignUpForm: React.FC = () => {
 	const { handleSuccess, handleError } = useAuth();

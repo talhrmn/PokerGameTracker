@@ -1,4 +1,8 @@
-.container {
-  padding: 0.5rem 1rem;
-  width: -webkit-fill-available;
+.dashboardContainer {
+	padding: 1.5rem 1rem;
+	min-height: 100vh;
+	height: fit-content;
+	width: -webkit-fill-available;
+	background-color: #f0f2f5; /* light gray, like many modern UIs */
+	font-family: "Arial", sans-serif;
 }

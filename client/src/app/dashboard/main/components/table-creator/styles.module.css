@@ -15,7 +15,7 @@
 	font-weight: 500;
 	color: white;
 	transition: all 0.2s;
-	animation: pulse 2s infinite;
+	/* animation: pulse 2s infinite; */
 }
 
 .newTableButton {
@@ -25,6 +25,7 @@
 .newTableButton:hover {
 	background: linear-gradient(to right, #ef4444, #f87171);
 	cursor: pointer;
+	scale: 1.1;
 }
 
 .buttonIcon {

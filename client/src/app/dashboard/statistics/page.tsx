@@ -15,13 +15,35 @@ const StatisticsPage = () => {
 		isError: error,
 	} = useFetchStats();
 
-	const loadingLabel = (
-		<div className={styles.loading}>Loading statistics...</div>
+	if (loading)
+		return <div className={styles.loading}>Loading statistics...</div>;
+	if (error)
+		return <div className={styles.error}>Error loading data: {error}</div>;
+
+	const totalProfit = data.reduce(
+		(sum: number, item: { profit: number }) => sum + item.profit,
+		0
 	);
 
-	const errorLabel = (
-		<div className={styles.error}>Error loading data: {error}</div>
+	const avgWinRate =
+		(data.reduce(
+			(sum: number, item: { win_rate: number }) => sum + item.win_rate,
+			0
+		) /
+			(data.length || 1)) *
+		100;
+
+	const totalTables = data.reduce(
+		(sum: number, item: { tables_played: number }) => sum + item.tables_played,
+		0
 	);
+
+	const totalDuration = data
+		.reduce(
+			(sum: number, item: { hours_played: number }) => sum + item.hours_played,
+			0
+		)
+		.toFixed(1);
 
 	const lineChartData =
 		!data || data.length === 0
@@ -56,60 +78,42 @@ const StatisticsPage = () => {
 					};
 			  });
 
-	const statsData = (
-		<div className={styles.container}>
+	return (
+		<div className={styles.statsContainer}>
 			<h1 className={styles.title}>Statistics Over Time</h1>
-
 			{/* Summary Cards */}
 			<div className={styles.statsGrid}>
 				<div className={styles.statCard}>
-					<h3>Total Profit</h3>
-					<p className={styles.statValue}>
-						$
-						{data
-							.reduce(
-								(sum: number, item: { profit: number }) => sum + item.profit,
-								0
-							)
-							.toFixed(2)}
+					<h3 className={styles.statTitle}>Total Profit</h3>
+					<p
+						className={`${styles.statValueBase} ${
+							totalProfit >= 0
+								? styles.statValuePositive
+								: styles.statValueNegative
+						}`}
+					>
+						{}${totalProfit.toFixed(2)}
 					</p>
 				</div>
 				<div className={styles.statCard}>
-					<h3>Average Win Rate</h3>
-					<p className={styles.statValue}>
-						{(
-							(data.reduce(
-								(sum: number, item: { win_rate: number }) =>
-									sum + item.win_rate,
-								0
-							) /
-								(data.length || 1)) *
-							100
-						).toFixed(1)}
-						%
+					<h3 className={styles.statTitle}>Average Win Rate</h3>
+					<p
+						className={`${styles.statValueBase} ${
+							avgWinRate >= 0.5
+								? styles.statValuePositive
+								: styles.statValueNegative
+						}`}
+					>
+						{avgWinRate.toFixed(1)}%
 					</p>
 				</div>
 				<div className={styles.statCard}>
-					<h3>Total Tables</h3>
-					<p className={styles.statValue}>
-						{data.reduce(
-							(sum: number, item: { tables_played: number }) =>
-								sum + item.tables_played,
-							0
-						)}
-					</p>
+					<h3 className={styles.statTitle}>Total Tables</h3>
+					<p className={styles.statValueBase}>{totalTables}</p>
 				</div>
 				<div className={styles.statCard}>
-					<h3>Total Hours</h3>
-					<p className={styles.statValue}>
-						{data
-							.reduce(
-								(sum: number, item: { hours_played: number }) =>
-									sum + item.hours_played,
-								0
-							)
-							.toFixed(1)}
-					</p>
+					<h3 className={styles.statTitle}>Total Hours</h3>
+					<p className={styles.statValueBase}>{totalDuration}</p>
 				</div>
 			</div>
 
@@ -130,8 +134,6 @@ const StatisticsPage = () => {
 			</div>
 		</div>
 	);
-
-	return loading ? loadingLabel : error ? errorLabel : statsData;
 };
 
 export default StatisticsPage;

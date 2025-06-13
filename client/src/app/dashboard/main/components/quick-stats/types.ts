@@ -19,6 +19,7 @@ export interface QuickStat {
   icon: React.ElementType;
   change: string;
   changeType: "increase" | "decrease";
+  colorClass: string;
 }
 
 export interface QuickStatsProps {

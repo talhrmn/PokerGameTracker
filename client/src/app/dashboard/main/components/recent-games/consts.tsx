@@ -21,12 +21,12 @@ export const GAME_COLUMNS: ColumnDefinition<GameStats>[] = [
 		key: "duration",
 		header: "Duration",
 		icon: Clock,
-		hidden: true,
+		// hidden: true,
 	},
 	{
 		key: "profit",
 		header: "Profit/Loss",
-		align: "right",
+		// align: "right",
 		render: (game: GameStats) => (
 			<span
 				className={
