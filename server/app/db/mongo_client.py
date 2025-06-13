@@ -1,5 +1,6 @@
-from motor.motor_asyncio import AsyncIOMotorClient
 from typing import Optional
+
+from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.core.config import settings
 from app.core.exceptions import DatabaseException
@@ -37,7 +38,7 @@ async def connect_to_mongo() -> None:
             serverSelectionTimeoutMS=5000  # 5 second timeout
         )
         MongoDB.db = MongoDB.client[settings.MONGODB_DB_NAME]
-        
+
         # Verify connection
         await MongoDB.client.admin.command('ping')
     except Exception as e:

@@ -4,7 +4,7 @@ from bson import ObjectId
 from fastapi import APIRouter, Depends, status, Body
 
 from app.api.dependencies import get_current_user, get_game_service, get_table_service
-from app.core.exceptions import ValidationException, NotFoundException, PermissionDeniedException, DatabaseException
+from app.core.exceptions import ValidationException, NotFoundException, PermissionDeniedException
 from app.schemas.game import GameStatusEnum
 from app.schemas.table import TableUpdate, TableBase, PlayerStatusEnum, TableDBOutput
 from app.schemas.user import UserResponse
@@ -16,9 +16,9 @@ router = APIRouter()
 
 @router.post("/create", status_code=status.HTTP_201_CREATED, response_model=Optional[TableDBOutput])
 async def create_table(
-    table: TableBase,
-    current_user: UserResponse = Depends(get_current_user),
-    table_service: TableService = Depends(get_table_service)
+        table: TableBase,
+        current_user: UserResponse = Depends(get_current_user),
+        table_service: TableService = Depends(get_table_service)
 ) -> TableDBOutput:
     """
     Create a new table.
@@ -36,11 +36,11 @@ async def create_table(
 
 @router.get("/", response_model=List[TableDBOutput])
 async def get_tables(
-    status: str = None,
-    limit: int = 10,
-    skip: int = 0,
-    current_user: UserResponse = Depends(get_current_user),
-    table_service: TableService = Depends(get_table_service)
+        status: str = None,
+        limit: int = 10,
+        skip: int = 0,
+        current_user: UserResponse = Depends(get_current_user),
+        table_service: TableService = Depends(get_table_service)
 ) -> List[TableDBOutput]:
     """
     Get tables for the current user.
@@ -60,9 +60,9 @@ async def get_tables(
 
 @router.get("/{table_id}", response_model=TableDBOutput)
 async def get_table(
-    table_id: str,
-    current_user: UserResponse = Depends(get_current_user),
-    table_service: TableService = Depends(get_table_service)
+        table_id: str,
+        current_user: UserResponse = Depends(get_current_user),
+        table_service: TableService = Depends(get_table_service)
 ) -> TableDBOutput:
     """
     Get a specific table.
@@ -91,10 +91,10 @@ async def get_table(
 
 @router.put("/{table_id}", response_model=Optional[TableDBOutput])
 async def update_table(
-    table_id: str,
-    table_update: TableUpdate,
-    current_user: UserResponse = Depends(get_current_user),
-    table_service: TableService = Depends(get_table_service)
+        table_id: str,
+        table_update: TableUpdate,
+        current_user: UserResponse = Depends(get_current_user),
+        table_service: TableService = Depends(get_table_service)
 ) -> TableDBOutput:
     """
     Update a table.
@@ -124,10 +124,10 @@ async def update_table(
 
 @router.delete("/{table_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_table(
-    table_id: str,
-    current_user: UserResponse = Depends(get_current_user),
-    table_service: TableService = Depends(get_table_service),
-    game_service: GameService = Depends(get_game_service)
+        table_id: str,
+        current_user: UserResponse = Depends(get_current_user),
+        table_service: TableService = Depends(get_table_service),
+        game_service: GameService = Depends(get_game_service)
 ) -> None:
     """
     Delete a table.
@@ -147,18 +147,17 @@ async def delete_table(
 
     if str(table.creator_id) != str(current_user.id):
         raise PermissionDeniedException(detail="Only the creator can delete the table")
-    
+
     game_count = await game_service.count_games_for_table(table_id)
     return await table_service.delete_table(table_id, game_count)
 
 
-
 @router.put("/{table_id}/invite", status_code=status.HTTP_200_OK, response_model=Optional[TableDBOutput])
 async def invite_user(
-    table_id: str,
-    friends: List[Dict] = Body(...),
-    current_user: UserResponse = Depends(get_current_user),
-    table_service: TableService = Depends(get_table_service)
+        table_id: str,
+        friends: List[Dict] = Body(...),
+        current_user: UserResponse = Depends(get_current_user),
+        table_service: TableService = Depends(get_table_service)
 ) -> TableDBOutput:
     """
     Invite users to a table.
@@ -180,11 +179,11 @@ async def invite_user(
 
 @router.put("/{table_id}/{player_status}", status_code=status.HTTP_200_OK, response_model=Optional[TableDBOutput])
 async def respond_to_invite(
-    table_id: str,
-    player_status: PlayerStatusEnum,
-    current_user: UserResponse = Depends(get_current_user),
-    table_service: TableService = Depends(get_table_service),
-    game_service: GameService = Depends(get_game_service)
+        table_id: str,
+        player_status: PlayerStatusEnum,
+        current_user: UserResponse = Depends(get_current_user),
+        table_service: TableService = Depends(get_table_service),
+        game_service: GameService = Depends(get_game_service)
 ) -> TableDBOutput:
     """
     Respond to a table invite.

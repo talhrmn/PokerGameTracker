@@ -15,9 +15,9 @@ router = APIRouter()
 
 @router.get("/", response_model=FriendsResponse)
 async def get_friends(
-    current_user: UserResponse = Depends(get_current_user),
-    user_service: UserService = Depends(get_user_service),
-    friends_service: FriendsService = Depends(get_friends_service)
+        current_user: UserResponse = Depends(get_current_user),
+        user_service: UserService = Depends(get_user_service),
+        friends_service: FriendsService = Depends(get_friends_service)
 ) -> FriendsResponse:
     """
     Get categorized list of friends.
@@ -37,9 +37,9 @@ async def get_friends(
 
 @router.post("/friends/{friend_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def add_friend(
-    friend_id: str,
-    current_user: UserResponse = Depends(get_current_user),
-    user_service: UserService = Depends(get_user_service)
+        friend_id: str,
+        current_user: UserResponse = Depends(get_current_user),
+        user_service: UserService = Depends(get_user_service)
 ) -> None:
     """
     Add a friend.
@@ -51,18 +51,18 @@ async def add_friend(
     """
     user_id = ObjectId(current_user.id)
     friend_obj_id = ObjectId(friend_id)
-    
+
     if str(user_id) == friend_id:
         raise ValidationException(detail="Cannot add yourself as a friend")
-        
+
     await user_service.add_friend(str(user_id), str(friend_obj_id))
 
 
 @router.delete("/friends/{friend_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def remove_friend(
-    friend_id: str,
-    current_user: UserResponse = Depends(get_current_user),
-    user_service: UserService = Depends(get_user_service)
+        friend_id: str,
+        current_user: UserResponse = Depends(get_current_user),
+        user_service: UserService = Depends(get_user_service)
 ) -> None:
     """
     Remove a friend.
@@ -79,9 +79,9 @@ async def remove_friend(
 
 @router.get("/search/{friend_regex}", response_model=List[UserResponse])
 async def search_users(
-    friend_regex: str,
-    current_user: UserResponse = Depends(get_current_user),
-    user_service: UserService = Depends(get_user_service)
+        friend_regex: str,
+        current_user: UserResponse = Depends(get_current_user),
+        user_service: UserService = Depends(get_user_service)
 ) -> List[UserResponse]:
     """
     Search for users.

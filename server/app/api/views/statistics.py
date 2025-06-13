@@ -22,8 +22,8 @@ router = APIRouter()
 
 @router.get("/monthly", response_model=List[MonthlyStats])
 async def get_monthly_stats(
-    current_user: UserResponse = Depends(get_current_user),
-    user_service: UserService = Depends(get_user_service)
+        current_user: UserResponse = Depends(get_current_user),
+        user_service: UserService = Depends(get_user_service)
 ) -> List[MonthlyStats]:
     """
     Get monthly statistics for the current user.
@@ -43,11 +43,11 @@ async def get_monthly_stats(
 
 @router.get("/dashboard", response_model=DashboardStats)
 async def get_dashboard_stats(
-    current_user: UserResponse = Depends(get_current_user),
-    user_service: UserService = Depends(get_user_service),
-    game_service: GameService = Depends(get_game_service),
-    table_service: TableService = Depends(get_table_service),
-    statistics_service: StatisticsService = Depends(get_statistics_service)
+        current_user: UserResponse = Depends(get_current_user),
+        user_service: UserService = Depends(get_user_service),
+        game_service: GameService = Depends(get_game_service),
+        table_service: TableService = Depends(get_table_service),
+        statistics_service: StatisticsService = Depends(get_statistics_service)
 ) -> DashboardStats:
     """
     Get dashboard statistics for the current user.

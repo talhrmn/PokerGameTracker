@@ -11,9 +11,9 @@ router = APIRouter()
 
 @router.get("/", response_model=TrendsResponse)
 async def get_trends(
-    current_user: UserResponse = Depends(get_current_user),
-    table_service: TableService = Depends(get_table_service),
-    game_service: GameService = Depends(get_game_service)
+        current_user: UserResponse = Depends(get_current_user),
+        table_service: TableService = Depends(get_table_service),
+        game_service: GameService = Depends(get_game_service)
 ) -> TrendsResponse:
     """
     Get trend statistics for the current user's games.
@@ -59,37 +59,37 @@ async def get_trends(
     # Calculate trends for each game
     for game in games:
         table_name = tables[game.id].name
-        
+
         # Update pot statistics
         total_pot += game.total_pot
         pot_data[table_name] = game.total_pot
-        
+
         # Update duration statistics
         game_time = game.duration.hours + (game.duration.minutes / 60)
         duration_data[table_name] = game_time
         total_hours += game_time
-        
+
         # Update player statistics
         game_num_of_players = len(game.players)
         players_data[table_name] = game_num_of_players
         total_players += game_num_of_players
-        
+
         # Calculate profit and buy-in data
         game_profit = {}
         game_buy_in = {}
         max_player = ""
         max_win = 0
-        
+
         for player in game.players:
             game_profit[player.username] = player.net_profit
             if player.net_profit > max_win:
                 max_player = player.username
                 max_win = player.net_profit
             game_buy_in[player.username] = sum(buyin.amount for buyin in player.buy_ins)
-        
+
         if max_player == current_user.username:
             wins += 1
-        
+
         profit_data[table_name] = game_profit
         buy_in_data[table_name] = game_buy_in
 

@@ -5,10 +5,10 @@ from typing import Optional, List
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 
+from app.core.exceptions import DatabaseException
 from app.repositories.base import BaseRepository
 from app.schemas.game import GameStatusEnum
 from app.schemas.table import TableDBInput, TableDBOutput, PlayerStatusEnum, PlayerStatus
-from app.core.exceptions import DatabaseException
 
 
 class TableRepository(BaseRepository[TableDBInput, TableDBOutput]):

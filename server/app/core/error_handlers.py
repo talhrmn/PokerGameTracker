@@ -1,10 +1,9 @@
 import logging
-from typing import Any, Dict, Optional
 
+from bson.errors import InvalidId
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
-from bson.errors import InvalidId
 
 from app.core.exceptions import AppException
 
@@ -45,4 +44,4 @@ async def general_exception_handler(request: Request, exc: Exception) -> JSONRes
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"detail": "Internal server error"}
-    ) 
+    )

@@ -1,6 +1,5 @@
 import logging
 from datetime import timedelta
-from typing import Optional
 
 from app.core.exceptions import AuthenticationException
 from app.core.security import create_access_token

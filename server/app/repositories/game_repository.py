@@ -6,9 +6,9 @@ from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import DESCENDING
 
+from app.core.exceptions import DatabaseException
 from app.repositories.base import BaseRepository
 from app.schemas.game import GameDBInput, GameDBOutput, GameBase, BuyIn, GameStatusEnum
-from app.core.exceptions import DatabaseException
 
 
 class GameRepository(BaseRepository[GameDBInput, GameDBOutput]):

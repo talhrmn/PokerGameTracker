@@ -82,10 +82,10 @@ class StatisticsService:
             raise ValidationException(detail="Failed to calculate monthly statistics")
 
     def get_formatted_recent_game(
-        self, 
-        user_id: PyObjectId, 
-        game: GameDBOutput, 
-        table: Optional[TableDBOutput]
+            self,
+            user_id: PyObjectId,
+            game: GameDBOutput,
+            table: Optional[TableDBOutput]
     ) -> RecentGameStats:
         """
         Format recent game statistics for display.

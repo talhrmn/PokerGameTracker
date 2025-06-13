@@ -5,9 +5,9 @@ from typing import Optional, List
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 
+from app.core.exceptions import DatabaseException
 from app.repositories.base import BaseRepository
 from app.schemas.user import UserDBInput, UserDBOutput, UserStats, MonthlyStats
-from app.core.exceptions import DatabaseException
 
 
 class UserRepository(BaseRepository[UserDBInput, UserDBOutput]):

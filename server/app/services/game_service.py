@@ -3,13 +3,11 @@ from datetime import datetime, UTC
 from typing import Optional, List
 
 from bson import ObjectId
-from fastapi import HTTPException, status
 
 from app.core.exceptions import (
     DatabaseException,
     NotFoundException,
-    ValidationException,
-    BusinessRuleException
+    ValidationException
 )
 from app.repositories.game_repository import GameRepository
 from app.schemas.game import (
@@ -329,7 +327,7 @@ class GameService(BaseService[GameDBInput, GameDBOutput]):
             total_pot = game.total_pot
             total_cashouts = sum(p.cash_out for p in game.players)
             if game.available_cash_out != 0 or total_cashouts != total_pot:
-                raise BusinessRuleException(detail="Cashout does not match buy-ins")
+                raise ValidationException(detail="Cashout does not match buy-ins")
 
             time_diff = datetime.now(UTC) - game.created_at
             hours, remainder = divmod(time_diff.total_seconds(), 3600)
@@ -341,7 +339,7 @@ class GameService(BaseService[GameDBInput, GameDBOutput]):
             if not updated:
                 raise DatabaseException(detail="Failed to end game")
             return updated
-        except (NotFoundException, BusinessRuleException):
+        except (NotFoundException, ValidationException):
             raise
         except Exception as e:
             raise DatabaseException(detail=f"Failed to end game: {str(e)}")

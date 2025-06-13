@@ -11,9 +11,9 @@ router = APIRouter()
 
 @router.get("/tables/{table_id}")
 async def table_events(
-    request: Request,
-    table_id: str,
-    sse_service: SSEService = Depends(get_sse_service)
+        request: Request,
+        table_id: str,
+        sse_service: SSEService = Depends(get_sse_service)
 ) -> StreamingResponse:
     """
     Stream server-sent events for a specific table.
@@ -31,15 +31,15 @@ async def table_events(
     """
     if not table_id:
         raise ValidationException(detail="Table ID is required")
-        
+
     return await sse_service.table_event_stream(request, table_id)
 
 
 @router.get("/games/{game_id}")
 async def game_events(
-    request: Request,
-    game_id: str,
-    sse_service: SSEService = Depends(get_sse_service)
+        request: Request,
+        game_id: str,
+        sse_service: SSEService = Depends(get_sse_service)
 ) -> StreamingResponse:
     """
     Stream server-sent events for a specific game.
@@ -57,5 +57,5 @@ async def game_events(
     """
     if not game_id:
         raise ValidationException(detail="Game ID is required")
-        
+
     return await sse_service.game_event_stream(request, game_id)

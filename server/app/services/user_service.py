@@ -108,7 +108,7 @@ class UserService(BaseService[UserInput, UserDBOutput]):
                 password_hash=password_hash,
                 last_login=datetime.now(UTC),
             )
-            
+
             return await self.repository.create(user_input)
         except DatabaseException as e:
             raise DatabaseException(detail=f"User creation failed: {str(e)}")
@@ -211,7 +211,8 @@ class UserService(BaseService[UserInput, UserDBOutput]):
         except Exception as e:
             raise DatabaseException(detail=f"Unexpected error getting monthly stats: {str(e)}")
 
-    async def update_user_monthly_stats(self, user_id: str, month: str, user_inc: MonthlyStats) -> Optional[UserDBOutput]:
+    async def update_user_monthly_stats(self, user_id: str, month: str, user_inc: MonthlyStats) -> Optional[
+        UserDBOutput]:
         """
         Update a user's monthly statistics.
         

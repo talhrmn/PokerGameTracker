@@ -5,8 +5,6 @@ from typing import List, Optional, Dict
 from app.core.exceptions import (
     DatabaseException,
     NotFoundException,
-    ValidationException,
-    BusinessRuleException,
     PermissionDeniedException
 )
 from app.repositories.table_repository import TableRepository

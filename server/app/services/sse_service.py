@@ -8,7 +8,6 @@ from starlette.requests import Request
 from starlette.responses import StreamingResponse
 
 from app.core.exceptions import (
-    DatabaseException,
     NotFoundException,
     StreamException
 )

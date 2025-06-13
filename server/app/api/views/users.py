@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter, Depends
 
 from app.api.dependencies import get_current_user, get_user_service
@@ -12,7 +10,7 @@ router = APIRouter()
 
 @router.get("/me", response_model=UserResponse)
 async def get_current_user_profile(
-    current_user: UserResponse = Depends(get_current_user)
+        current_user: UserResponse = Depends(get_current_user)
 ) -> UserResponse:
     """
     Get the current user's profile.
@@ -28,9 +26,9 @@ async def get_current_user_profile(
 
 @router.put("/me", response_model=UserDBOutput)
 async def update_user_profile(
-    user_update: UserUpdate,
-    current_user: UserResponse = Depends(get_current_user),
-    user_service: UserService = Depends(get_user_service)
+        user_update: UserUpdate,
+        current_user: UserResponse = Depends(get_current_user),
+        user_service: UserService = Depends(get_user_service)
 ) -> UserDBOutput:
     """
     Update the current user's profile.

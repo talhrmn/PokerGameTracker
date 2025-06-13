@@ -1,10 +1,10 @@
 from contextlib import asynccontextmanager
 
 import uvicorn
+from bson.errors import InvalidId
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import ValidationError
-from bson.errors import InvalidId
 
 from app.api.api import api_router
 from app.core.config import settings
