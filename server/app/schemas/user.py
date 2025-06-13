@@ -47,6 +47,7 @@ class UserUpdate(BaseModel):
     password: Optional[str] = None
     profile_pic: Optional[str] = None
 
+
 class UserDBBase(UserBase):
     profile_pic: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.now(UTC))
@@ -54,6 +55,7 @@ class UserDBBase(UserBase):
     stats: UserStats = Field(default_factory=UserStats)
     monthly_stats: List[MonthlyStats] = []
     friends: List[PyObjectId] = []
+
 
 class UserDBInput(UserDBBase):
     password_hash: str

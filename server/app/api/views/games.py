@@ -1,12 +1,12 @@
 from typing import List, Optional
 
 from bson import ObjectId
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, Depends, status
 
 from app.api.dependencies import get_current_user, get_sse_service, get_table_service, get_game_service, \
     get_user_service
-from app.schemas.game import GameUpdate, GameDBInput, GameBase, GameStatusEnum, GameDBOutput, BuyIn, \
-    CashOut, Duration
+from app.core.exceptions import ValidationException, NotFoundException, PermissionDeniedException
+from app.schemas.game import GameUpdate, GameDBInput, GameBase, GameStatusEnum, GameDBOutput, BuyIn, CashOut, Duration
 from app.schemas.user import UserResponse, UserStats, MonthlyStats
 from app.services.game_service import GameService
 from app.services.sse_service import SSEService
@@ -17,16 +17,30 @@ router = APIRouter()
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=GameDBOutput)
-async def create_game(game: GameBase,
-                      current_user: UserResponse = Depends(get_current_user),
-                      table_service: TableService = Depends(get_table_service),
-                      game_service: GameService = Depends(get_game_service)) -> GameDBOutput:
+async def create_game(
+        game: GameBase,
+        current_user: UserResponse = Depends(get_current_user),
+        table_service: TableService = Depends(get_table_service),
+        game_service: GameService = Depends(get_game_service)
+) -> GameDBOutput:
+    """
+    Create a new game.
+    
+    Args:
+        game: Game data
+        current_user: The current authenticated user
+        table_service: The table service
+        game_service: The game service
+        
+    Returns:
+        The created game
+    """
     table = await table_service.get_by_id(str(game.table_id))
     if not table:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Table not found")
+        raise NotFoundException(detail="Table not found")
 
     if str(table.creator_id) != str(current_user.id):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only table creator can start a game")
+        raise PermissionDeniedException(detail="Only table creator can start a game")
 
     game = await game_service.create_game(game, current_user)
     updated_data = {"game_id": str(game.id), "status": GameStatusEnum.IN_PROGRESS}
@@ -42,39 +56,71 @@ async def get_games(
         skip: int = None,
         current_user: UserResponse = Depends(get_current_user),
         game_service: GameService = Depends(get_game_service)
-):
-    games = await game_service.get_games_for_player(current_user, table_id, status, skip, limit)
-    return games
+) -> List[GameDBOutput]:
+    """
+    Get games for the current user.
+    
+    Args:
+        table_id: Optional table ID to filter by
+        status: Optional status to filter by
+        limit: Optional limit for pagination
+        skip: Optional skip for pagination
+        current_user: The current authenticated user
+        game_service: The game service
+        
+    Returns:
+        List of games
+    """
+    return await game_service.get_games_for_player(current_user, table_id, status, skip, limit)
 
 
 @router.get("/count", response_model=int)
 async def get_games_count(
         current_user: UserResponse = Depends(get_current_user),
         game_service: GameService = Depends(get_game_service)
-):
-    games_count = await game_service.count_games_for_player(current_user)
-    return games_count
+) -> int:
+    """
+    Get count of games for the current user.
+    
+    Args:
+        current_user: The current authenticated user
+        game_service: The game service
+        
+    Returns:
+        Number of games
+    """
+    return await game_service.count_games_for_player(current_user)
 
 
 @router.get("/{game_id}", response_model=GameDBInput)
-async def get_game(game_id: str, current_user: UserResponse = Depends(get_current_user),
-                   game_service: GameService = Depends(get_game_service)) -> GameDBOutput:
+async def get_game(
+        game_id: str,
+        current_user: UserResponse = Depends(get_current_user),
+        game_service: GameService = Depends(get_game_service)
+) -> GameDBOutput:
+    """
+    Get a specific game.
+    
+    Args:
+        game_id: ID of the game
+        current_user: The current authenticated user
+        game_service: The game service
+        
+    Returns:
+        The game data
+    """
     if not ObjectId.is_valid(game_id):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid game ID")
+        raise ValidationException(detail="Invalid game ID")
 
     game = await game_service.get_by_id(game_id)
     if not game:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Game not found")
+        raise NotFoundException(detail="Game not found")
 
-    user_is_player = any(
-        str(player.user_id) == str(current_user.id)
-        for player in game.players
-    )
-
+    user_is_player = any(str(player.user_id) == str(current_user.id) for player in game.players)
     user_is_game_creator = str(game.creator_id) == str(current_user.id)
 
     if not (user_is_player or user_is_game_creator):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
+        raise PermissionDeniedException(detail="Access denied")
 
     return game
 
@@ -87,56 +133,73 @@ async def update_game(
         game_service: GameService = Depends(get_game_service),
         table_service: TableService = Depends(get_table_service),
         user_service: UserService = Depends(get_user_service),
-        sse_service: SSEService = Depends(get_sse_service),
-):
+        sse_service: SSEService = Depends(get_sse_service)
+) -> GameDBOutput:
+    """
+    Update a game.
+    
+    Args:
+        game_id: ID of the game
+        game_update: Updated game data
+        current_user: The current authenticated user
+        game_service: The game service
+        table_service: The table service
+        user_service: The user service
+        sse_service: The SSE service
+        
+    Returns:
+        The updated game
+    """
     if not ObjectId.is_valid(game_id):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid game ID")
+        raise ValidationException(detail="Invalid game ID")
 
     game = await game_service.get_by_id(game_id)
     if not game:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Game not found")
+        raise NotFoundException(detail="Game not found")
 
     table = await table_service.get_by_id(str(game.table_id))
     if not table or str(table.creator_id) != str(current_user.id):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only the table creator can modify the game")
+        raise PermissionDeniedException(detail="Only the table creator can modify the game")
 
     updated = await game_service.update_game(game_id, game_update)
 
     is_completing = (game_update.status == GameStatusEnum.COMPLETED)
     was_not_completed = (game.status != GameStatusEnum.COMPLETED)
-    # If completing now
     if is_completing and was_not_completed:
-        # 1. Update table status to COMPLETED
-        # game.table_id might be PyObjectId or string; ensure string
-        await table_service.update_table(str(game.table_id),
-                                         {"status": GameStatusEnum.COMPLETED.value})
-        # 2. For each player, update user stats
+        await table_service.update_table(str(game.table_id), {"status": GameStatusEnum.COMPLETED.value})
+
         for player in game.players:
             user_id = str(player.user_id)
             profit = player.net_profit
             duration = game.duration or Duration()
             hours_played = duration.hours + (duration.minutes / 60)
+
             user_stats = UserStats(total_profit=profit, tables_played=1, hours_played=hours_played)
             await user_service.update_user_stats(user_id, user_stats)
+
             month_str = game.date.strftime("%b %Y")
-            user_monthly = MonthlyStats(month=month_str, profit=profit, win_rate=0, tables_played=1,
-                                        hours_played=hours_played)
+            user_monthly = MonthlyStats(
+                month=month_str,
+                profit=profit,
+                win_rate=0,
+                tables_played=1,
+                hours_played=hours_played
+            )
             await user_service.update_user_monthly_stats(user_id, month_str, user_monthly)
 
             win_rate = await game_service.get_user_win_rate(user_id)
             if win_rate:
                 await user_service.update_win_rate(user_id, win_rate)
+
             monthly_rates = await game_service.get_user_monthly_win_rates(user_id)
             if monthly_rates:
                 await user_service.update_monthly_win_rates(user_id, monthly_rates)
 
-
-
     try:
         await sse_service.send_game_update(game_id=game_id, data=updated)
-    except Exception as e:
-        # For now
-        pass
+    except Exception:
+        pass  # SSE errors are not critical
+
     return updated
 
 
@@ -146,20 +209,35 @@ async def update_player_buyin(
         buyin: BuyIn,
         current_user: UserResponse = Depends(get_current_user),
         game_service: GameService = Depends(get_game_service),
-        sse_service: SSEService = Depends(get_sse_service),
+        sse_service: SSEService = Depends(get_sse_service)
 ) -> GameDBOutput:
+    """
+    Update player's buy-in for a game.
+    
+    Args:
+        game_id: ID of the game
+        buyin: Buy-in data
+        current_user: The current authenticated user
+        game_service: The game service
+        sse_service: The SSE service
+        
+    Returns:
+        The updated game
+    """
     if not ObjectId.is_valid(game_id):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid game ID")
+        raise ValidationException(detail="Invalid game ID")
 
-    existing_game = await game_service.get_by_id(game_id)
-    if not existing_game:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Game not found")
+    game = await game_service.get_by_id(game_id)
+    if not game:
+        raise NotFoundException(detail="Game not found")
+
     updated_game = await game_service.update_player_buyin(game_id, current_user, buyin)
+
     try:
         await sse_service.send_game_update(game_id=game_id, data=updated_game)
-    except Exception as e:
-        # for now
-        pass
+    except Exception:
+        pass  # SSE errors are not critical
+
     return updated_game
 
 
@@ -171,18 +249,33 @@ async def update_player_cashout(
         game_service: GameService = Depends(get_game_service),
         sse_service: SSEService = Depends(get_sse_service)
 ) -> GameDBOutput:
+    """
+    Update player's cash-out for a game.
+    
+    Args:
+        game_id: ID of the game
+        cash_out: Cash-out data
+        current_user: The current authenticated user
+        game_service: The game service
+        sse_service: The SSE service
+        
+    Returns:
+        The updated game
+    """
     if not ObjectId.is_valid(game_id):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid game ID")
+        raise ValidationException(detail="Invalid game ID")
 
     game = await game_service.get_by_id(game_id)
     if not game:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Game not found")
+        raise NotFoundException(detail="Game not found")
+
     updated_game = await game_service.update_player_cashout(game_id, current_user, cash_out)
+
     try:
         await sse_service.send_game_update(game_id=game_id, data=updated_game)
-    except Exception as e:
-        # for now
-        pass
+    except Exception:
+        pass  # SSE errors are not critical
+
     return updated_game
 
 
@@ -192,20 +285,34 @@ async def update_end_game(
         current_user: UserResponse = Depends(get_current_user),
         game_service: GameService = Depends(get_game_service),
         sse_service: SSEService = Depends(get_sse_service)
-):
+) -> GameDBOutput:
+    """
+    End a game.
+    
+    Args:
+        game_id: ID of the game
+        current_user: The current authenticated user
+        game_service: The game service
+        sse_service: The SSE service
+        
+    Returns:
+        The updated game
+    """
     if not ObjectId.is_valid(game_id):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid game ID")
+        raise ValidationException(detail="Invalid game ID")
 
     game = await game_service.get_by_id(game_id)
     if not game:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Game not found")
+        raise NotFoundException(detail="Game not found")
 
     if str(game.creator_id) != str(current_user.id):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only game creator can end the game")
+        raise PermissionDeniedException(detail="Only game creator can end the game")
+
     updated_game = await game_service.end_game(game_id)
+
     try:
         await sse_service.send_game_update(game_id=game_id, data=updated_game)
-    except Exception as e:
-        # for now
-        pass
+    except Exception:
+        pass  # SSE errors are not critical
+
     return updated_game
