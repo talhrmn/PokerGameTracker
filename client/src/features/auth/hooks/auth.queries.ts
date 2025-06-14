@@ -28,7 +28,7 @@ export const useLoginMutation = (
   return useMutation<AccessType, AxiosError, CredentialsType>({
     mutationFn: (creds) => authService.login(creds),
     onSuccess: (data) => onSuccess(data.access_token),
-    onError,
+    onError: (err) => onError(err),
   });
 };
 
@@ -39,7 +39,7 @@ export const useSignUpMutation = (
   return useMutation<AccessType, AxiosError, SignUpFormType>({
     mutationFn: (userData) => authService.signup(userData),
     onSuccess: (data) => onSuccess(data.access_token),
-    onError,
+    onError: (err) => onError(err),
   });
 };
 

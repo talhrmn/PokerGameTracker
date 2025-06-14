@@ -48,38 +48,34 @@ const StatisticsPage = () => {
 		)
 		.toFixed(1);
 
-	const lineChartData =
-		!data || data.length === 0
-			? []
-			: Object.keys(ChartMetrics).map((metric) => {
-					const seriesData: NivoSeries[] = [
-						{
-							id: ChartMetrics[metric].label,
-							colors: ChartMetrics[metric].colors,
-							data: data.map((item: MonthlyStatsProps) => ({
-								x: item.month,
-								y:
-									metric === "win_rate"
-										? Number(
-												(
-													(item[metric as keyof MonthlyStatsProps] as number) *
-													100
-												).toFixed(1)
-										  )
-										: Number(item[metric as keyof MonthlyStatsProps]),
-							})),
-						},
-					];
+	const lineChartData = Object.keys(ChartMetrics || []).map((metric) => {
+		const seriesData: NivoSeries[] = [
+			{
+				id: ChartMetrics[metric].label,
+				colors: ChartMetrics[metric].colors,
+				data: data.map((item: MonthlyStatsProps) => ({
+					x: item.month,
+					y:
+						metric === "win_rate"
+							? Number(
+									(
+										(item[metric as keyof MonthlyStatsProps] as number) * 100
+									).toFixed(1)
+							  )
+							: Number(item[metric as keyof MonthlyStatsProps]),
+				})),
+			},
+		];
 
-					return {
-						label: ChartMetrics[metric].label,
-						colors: ChartMetrics[metric].colors,
-						xAxisLable: ChartMetrics[metric].xAxisLable,
-						yAxisLable: ChartMetrics[metric].yAxisLable,
-						renderTooltip: ChartMetrics[metric].renderTooltip,
-						data: seriesData,
-					};
-			  });
+		return {
+			label: ChartMetrics[metric].label,
+			colors: ChartMetrics[metric].colors,
+			xAxisLable: ChartMetrics[metric].xAxisLable,
+			yAxisLable: ChartMetrics[metric].yAxisLable,
+			renderTooltip: ChartMetrics[metric].renderTooltip,
+			data: seriesData,
+		};
+	});
 
 	return (
 		<>

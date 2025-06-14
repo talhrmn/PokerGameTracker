@@ -1,13 +1,13 @@
 "use client";
 
 import { useAuth } from "@/features/auth/contexts/context";
+import { ActionButton } from "@/features/common/components/action-button/action-button";
 import { NAVBAR_MENU_ITEMS } from "@/features/common/consts";
 import { LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styles from "./styles.module.css";
-import { ActionButton } from "@/features/common/components/action-button/action-button";
 
 export default function Navbar() {
 	const pathname = usePathname();
@@ -67,7 +67,9 @@ export default function Navbar() {
 							action={{
 								id: "profile",
 								type: "button",
-								label: "Profile",
+								label:
+									user.username.toLowerCase().charAt(0).toUpperCase() +
+									user.username.toLowerCase().slice(1),
 								icon: User,
 								variant: "primary",
 								onClick: () => setIsProfileMenuOpen((prev) => !prev),

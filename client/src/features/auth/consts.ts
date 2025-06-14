@@ -17,7 +17,7 @@ export const AuthTab = {
   signup: {
     tabName: "signup",
     tabTitle: "-- Signup --",
-    submitRoute: "/auth/register",
+    submitRoute: "/auth/signup",
   },
 };
 

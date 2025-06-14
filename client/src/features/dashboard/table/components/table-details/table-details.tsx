@@ -2,7 +2,6 @@ import { TableForm } from "@/features/common/components/table-form/table-form";
 import {
 	TableActionHandlers,
 	TableDetailsModalProps,
-	TableFormProps,
 	TableGameFormProps,
 } from "@/features/common/types";
 import InviteModal from "@/features/dashboard/table/components/table-invite/table-invite";
@@ -22,7 +21,6 @@ export const TableDetailsModal: React.FC<TableDetailsModalProps> = ({
 	onClose,
 	onUpdateTables,
 }) => {
-	console.log(table);
 	const [isEditing, setIsEditing] = useState(false);
 	const [isQRModalOpen, setIsQRModalOpen] = useState(false);
 	const router = useRouter();
@@ -44,7 +42,6 @@ export const TableDetailsModal: React.FC<TableDetailsModalProps> = ({
 		submitLoading || deleteLoading || gameStartLoading || gameResponseLoading;
 
 	const handleFormSubmit = (params: TableGameFormProps) => {
-		console.log(table);
 		tableSubmitMutation({ tableId: table._id, params });
 		setIsEditing(false);
 	};

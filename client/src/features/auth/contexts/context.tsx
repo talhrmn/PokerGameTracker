@@ -10,7 +10,6 @@ import { logoutUser, useAuthQuery } from "../hooks/auth.queries";
 
 import { EMPTY_USER } from "@/features/auth/consts";
 import { AuthContextType } from "@/features/auth/types";
-import { message } from "antd";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { redirect, usePathname, useRouter } from "next/navigation";
@@ -66,16 +65,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 		[router, refetchUser]
 	);
 
-	const handleError = useCallback((err: unknown) => {
-		const error = err as AxiosError<{ detail: { msg: string }[] | string }>;
-		const detail = error.response?.data?.detail;
-		const errorMessage = Array.isArray(detail)
-			? detail.map((item) => item.msg).join(" ")
-			: typeof detail === "string"
-			? detail
-			: "Unexpected error occurred";
-		message.error(errorMessage);
-	}, []);
+	const handleError = useCallback(
+		(err: AxiosError<{ detail: { msg: string }[] | string }>) => {
+			const error = err as AxiosError<{ detail: { msg: string }[] | string }>;
+			const detail = error.response?.data?.detail;
+			const errorMessage = Array.isArray(detail)
+				? detail.map((item) => item.msg).join(" ")
+				: typeof detail === "string"
+				? detail
+				: "Unexpected error occurred";
+			alert(errorMessage);
+		},
+		[]
+	);
 
 	const logout = useCallback(() => {
 		logoutUser();
