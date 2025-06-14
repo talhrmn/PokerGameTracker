@@ -4,14 +4,15 @@ from bson import ObjectId
 from fastapi import APIRouter, Depends, status
 
 from app.api.dependencies import get_current_user, get_sse_service, get_table_service, get_game_service, \
-    get_user_service
+    get_statistics_service
 from app.core.exceptions import ValidationException, NotFoundException, PermissionDeniedException
 from app.schemas.game import GameUpdate, GameDBInput, GameBase, GameStatusEnum, GameDBOutput, BuyIn, CashOut, Duration
-from app.schemas.user import UserResponse, UserStats, MonthlyStats
+from app.schemas.statistics import Stats, MonthlyStats
+from app.schemas.user import UserResponse
 from app.services.game_service import GameService
 from app.services.sse_service import SSEService
+from app.services.statistics_service import StatisticsService
 from app.services.table_service import TableService
-from app.services.user_service import UserService
 
 router = APIRouter()
 
@@ -132,7 +133,7 @@ async def update_game(
         current_user: UserResponse = Depends(get_current_user),
         game_service: GameService = Depends(get_game_service),
         table_service: TableService = Depends(get_table_service),
-        user_service: UserService = Depends(get_user_service),
+        statistics_service: StatisticsService = Depends(get_statistics_service),
         sse_service: SSEService = Depends(get_sse_service)
 ) -> GameDBOutput:
     """
@@ -144,7 +145,7 @@ async def update_game(
         current_user: The current authenticated user
         game_service: The game service
         table_service: The table service
-        user_service: The user service
+        statistics_service: The statistics service
         sse_service: The SSE service
         
     Returns:
@@ -174,26 +175,31 @@ async def update_game(
             duration = game.duration or Duration()
             hours_played = duration.hours + (duration.minutes / 60)
 
-            user_stats = UserStats(total_profit=profit, tables_played=1, hours_played=hours_played)
-            await user_service.update_user_stats(user_id, user_stats)
+            won = 1 if profit > 0 else 0
+            loss = 1 if profit <= 0 else 0
+
+            user_stats = Stats(total_profit=profit, games_won=won, games_lost=loss, tables_played=1,
+                               hours_played=hours_played)
+            await statistics_service.update_user_stats(user_id, user_stats)
 
             month_str = game.date.strftime("%b %Y")
             user_monthly = MonthlyStats(
                 month=month_str,
                 profit=profit,
-                win_rate=0,
+                games_won=won,
+                games_lost=loss,
                 tables_played=1,
                 hours_played=hours_played
             )
-            await user_service.update_user_monthly_stats(user_id, month_str, user_monthly)
+            await statistics_service.update_user_monthly_stats(user_id, month_str, user_monthly)
 
-            win_rate = await game_service.get_user_win_rate(user_id)
-            if win_rate:
-                await user_service.update_win_rate(user_id, win_rate)
-
-            monthly_rates = await game_service.get_user_monthly_win_rates(user_id)
-            if monthly_rates:
-                await user_service.update_monthly_win_rates(user_id, monthly_rates)
+            # win_rate = await game_service.get_user_win_rate(user_id)
+            # if win_rate:
+            #     await statistics_service.update_win_rate(user_id, win_rate)
+            #
+            # monthly_rates = await game_service.get_user_monthly_win_rates(user_id)
+            # if monthly_rates:
+            #     await statistics_service.update_monthly_win_rates(user_id, monthly_rates)
 
     try:
         await sse_service.send_game_update(game_id=game_id, data=updated)
@@ -285,6 +291,7 @@ async def update_end_game(
         current_user: UserResponse = Depends(get_current_user),
         game_service: GameService = Depends(get_game_service),
         table_service: TableService = Depends(get_table_service),
+        statistics_service: StatisticsService = Depends(get_statistics_service),
         sse_service: SSEService = Depends(get_sse_service)
 ) -> GameDBOutput:
     """
@@ -294,6 +301,8 @@ async def update_end_game(
         game_id: ID of the game
         current_user: The current authenticated user
         game_service: The game service
+        table_service: The table service
+        statistics_service: The statistics service
         sse_service: The SSE service
         
     Returns:
@@ -311,6 +320,30 @@ async def update_end_game(
 
     updated_game = await game_service.end_game(game_id)
     await table_service.update_table(str(updated_game.table_id), {"status": GameStatusEnum.COMPLETED})
+
+    for player in game.players:
+        user_id = str(player.user_id)
+        profit = player.net_profit
+        duration = game.duration or Duration()
+        hours_played = duration.hours + (duration.minutes / 60)
+
+        won = 1 if profit > 0 else 0
+        loss = 1 if profit <= 0 else 0
+
+        user_stats = Stats(total_profit=profit, games_won=won, games_lost=loss, tables_played=1,
+                           hours_played=hours_played)
+        await statistics_service.update_user_stats(user_id, user_stats)
+
+        month_str = game.date.strftime("%b %Y")
+        user_monthly = MonthlyStats(
+            month=month_str,
+            profit=profit,
+            games_won=won,
+            games_lost=loss,
+            tables_played=1,
+            hours_played=hours_played
+        )
+        await statistics_service.update_user_monthly_stats(user_id, month_str, user_monthly)
 
     try:
         await sse_service.send_game_update(game_id=game_id, data=updated_game)

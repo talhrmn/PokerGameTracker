@@ -6,21 +6,6 @@ from pydantic import BaseModel, Field, EmailStr
 from app.schemas.py_object_id import PyObjectId
 
 
-class UserStats(BaseModel):
-    total_profit: float = 0
-    win_rate: float = 0
-    tables_played: int = 0
-    hours_played: float = 0
-
-
-class MonthlyStats(BaseModel):
-    month: str
-    profit: float = 0
-    win_rate: float = 0
-    tables_played: int = 0
-    hours_played: float = 0
-
-
 class UserBase(BaseModel):
     username: str
     email: EmailStr
@@ -52,8 +37,6 @@ class UserDBBase(UserBase):
     profile_pic: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     last_login: Optional[datetime] = None
-    stats: UserStats = Field(default_factory=UserStats)
-    monthly_stats: List[MonthlyStats] = []
     friends: List[PyObjectId] = []
 
 

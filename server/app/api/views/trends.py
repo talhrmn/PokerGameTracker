@@ -93,7 +93,6 @@ async def get_trends(
         profit_data[table_name] = game_profit
         buy_in_data[table_name] = game_buy_in
 
-    # Calculate averages if games exist
     num_of_games = len(games)
     average_win_rate = wins / num_of_games if num_of_games > 0 else 0
     average_pot_size = total_pot / num_of_games if num_of_games > 0 else 0

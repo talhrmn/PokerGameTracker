@@ -1,4 +1,3 @@
-from bson import ObjectId
 from fastapi import Request, Depends, HTTPException
 from jose import jwt, JWTError
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -8,6 +7,7 @@ from app.core.config import settings
 from app.core.security import oauth2_scheme
 from app.db.mongo_client import MongoDB
 from app.repositories.game_repository import GameRepository
+from app.repositories.statistics_repository import StatisticsRepository
 from app.repositories.table_repository import TableRepository
 from app.repositories.user_repository import UserRepository
 from app.schemas.user import UserResponse
@@ -24,7 +24,16 @@ def get_database():
     return MongoDB.db
 
 
+def get_user_repository(db_client: AsyncIOMotorClient = Depends(get_database)) -> UserRepository:
+    return UserRepository(db_client)
+
+
+def get_user_service(user_repo: UserRepository = Depends(get_user_repository)) -> UserService:
+    return UserService(user_repo)
+
+
 async def get_current_user(token: str = Depends(oauth2_scheme),
+                           user_service: UserService = Depends(get_user_service),
                            db_client: AsyncIOMotorClient = Depends(get_database)) -> UserResponse:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -45,20 +54,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
     except JWTError:
         raise credentials_exception
 
-    user = await db_client.users.find_one({"_id": ObjectId(user_id)})
+    user = await user_service.get_by_id(user_id)
 
     if user is None:
         raise credentials_exception
 
-    return UserResponse(**user)
-
-
-def get_user_repository(db_client: AsyncIOMotorClient = Depends(get_database)) -> UserRepository:
-    return UserRepository(db_client)
-
-
-def get_user_service(user_repo: UserRepository = Depends(get_user_repository)) -> UserService:
-    return UserService(user_repo)
+    return UserResponse(**user.model_dump())
 
 
 def get_table_repository(db_client: AsyncIOMotorClient = Depends(get_database)) -> TableRepository:
@@ -75,6 +76,14 @@ def get_game_repository(db_client: AsyncIOMotorClient = Depends(get_database)) -
 
 def get_game_service(game_repo: GameRepository = Depends(get_game_repository)) -> GameService:
     return GameService(game_repo)
+
+
+def get_statistics_repository(db_client: AsyncIOMotorClient = Depends(get_database)) -> StatisticsRepository:
+    return StatisticsRepository(db_client)
+
+
+def get_statistics_service(stats_repo: StatisticsRepository = Depends(get_statistics_repository)) -> StatisticsService:
+    return StatisticsService(stats_repo)
 
 
 def get_auth_service() -> AuthService:
@@ -94,7 +103,3 @@ def get_sse_service(
 
 def get_friends_service() -> FriendsService:
     return FriendsService()
-
-
-def get_statistics_service() -> StatisticsService:
-    return StatisticsService()

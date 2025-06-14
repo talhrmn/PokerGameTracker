@@ -12,7 +12,7 @@ from app.core.exceptions import (
 )
 from app.core.security import get_password_hash
 from app.repositories.user_repository import UserRepository
-from app.schemas.user import UserInput, UserDBInput, UserDBOutput, UserStats, MonthlyStats, UserDBAuthOutput
+from app.schemas.user import UserInput, UserDBInput, UserDBOutput, UserDBAuthOutput
 from app.services.base import BaseService
 
 
@@ -187,74 +187,6 @@ class UserService(BaseService[UserInput, UserDBOutput]):
         except Exception as e:
             raise DatabaseException(detail=f"Unexpected error during user update: {str(e)}")
 
-    async def update_user_stats(self, user_id: str, user_inc: UserStats) -> Optional[UserDBOutput]:
-        """
-        Update a user's statistics.
-        
-        Args:
-            user_id: The ID of the user to update
-            user_inc: The statistics to increment
-            
-        Returns:
-            Optional[UserDBOutput]: The updated user if successful, None otherwise
-            
-        Raises:
-            DatabaseException: If there's an error updating the stats
-        """
-        try:
-            return await self.repository.increment_user_stats(user_id, user_inc)
-        except DatabaseException as e:
-            raise DatabaseException(detail=f"Failed to update user stats: {str(e)}")
-        except Exception as e:
-            raise DatabaseException(detail=f"Unexpected error during stats update: {str(e)}")
-
-    async def get_user_monthly_stats(self, user_id: str) -> Optional[List[MonthlyStats]]:
-        """
-        Get a user's monthly statistics.
-        
-        Args:
-            user_id: The ID of the user
-            
-        Returns:
-            Optional[List[MonthlyStats]]: List of monthly statistics if found, None otherwise
-            
-        Raises:
-            DatabaseException: If there's an error fetching the stats
-        """
-        try:
-            monthly_stats = await self.repository.get_user_monthly_stats(user_id)
-            return [MonthlyStats(**stats) for stats in monthly_stats]
-        except DatabaseException as e:
-            raise DatabaseException(detail=f"Failed to get monthly stats: {str(e)}")
-        except Exception as e:
-            raise DatabaseException(detail=f"Unexpected error getting monthly stats: {str(e)}")
-
-    async def update_user_monthly_stats(self, user_id: str, month: str, user_inc: MonthlyStats) -> Optional[
-        UserDBOutput]:
-        """
-        Update a user's monthly statistics.
-        
-        Args:
-            user_id: The ID of the user
-            month: The month to update stats for
-            user_inc: The statistics to update
-            
-        Returns:
-            Optional[UserDBOutput]: The updated user if successful, None otherwise
-            
-        Raises:
-            DatabaseException: If there's an error updating the stats
-        """
-        try:
-            ok = await self.repository.upsert_monthly_stats(user_id, month, user_inc)
-            if not ok:
-                raise DatabaseException(detail="Failed to update monthly stats")
-            return ok
-        except DatabaseException as e:
-            raise DatabaseException(detail=f"Failed to update monthly stats: {str(e)}")
-        except Exception as e:
-            raise DatabaseException(detail=f"Unexpected error updating monthly stats: {str(e)}")
-
     async def get_user_friends(self, user_id: str) -> Optional[List[UserDBOutput]]:
         """
         Get a user's friends list.
@@ -359,42 +291,3 @@ class UserService(BaseService[UserInput, UserDBOutput]):
             return await self.repository.search_users(user_id, friend_regex)
         except Exception as e:
             raise DatabaseException(detail=f"Failed to search users: {str(e)}")
-
-    async def update_win_rate(self, user_id: str, stats: dict) -> None:
-        """
-        Update a user's overall win rate.
-        
-        Args:
-            user_id: The ID of the user
-            stats: Dictionary containing wins and total_games
-            
-        Raises:
-            DatabaseException: If there's an error updating the win rate
-        """
-        try:
-            total_games = stats.get("total_games", 0)
-            win_rate = (stats["wins"] / total_games) * 100 if total_games > 0 else 0.0
-            await self.update(user_id, {"stats.win_rate": win_rate})
-        except Exception as e:
-            raise DatabaseException(detail=f"Failed to update win rate: {str(e)}")
-
-    async def update_monthly_win_rates(self, user_id: str, stats: List[dict]) -> None:
-        """
-        Update a user's monthly win rates.
-        
-        Args:
-            user_id: The ID of the user
-            stats: List of dictionaries containing monthly statistics
-            
-        Raises:
-            DatabaseException: If there's an error updating the win rates
-        """
-        try:
-            for month_data in stats:
-                month_str = month_data["_id"]
-                wins = month_data.get("wins", 0)
-                total = month_data.get("total_games", 0)
-                month_win_rate = (wins / total) * 100 if total > 0 else 0.0
-                await self.repository.update_monthly_stats(user_id, month_str, month_win_rate)
-        except Exception as e:
-            raise DatabaseException(detail=f"Failed to update monthly win rates: {str(e)}")
