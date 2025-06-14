@@ -1,9 +1,4 @@
-export interface UserStatsType {
-  total_profit: number;
-  win_rate: number;
-  tables_played: number;
-  hours_played: number;
-}
+import { StatsType } from "@/features/dashboard/statistics/types";
 
 export interface UserMonthlyStats {
   profit_change: string;
@@ -23,6 +18,6 @@ export interface QuickStat {
 }
 
 export interface QuickStatsProps {
-  user_stats: UserStatsType;
+  user_stats: StatsType;
   monthly_changes: UserMonthlyStats;
 }

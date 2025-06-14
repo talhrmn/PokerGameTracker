@@ -1,5 +1,6 @@
 "use client";
 
+import { AxiosError } from "axios";
 import {
 	AuthTabType,
 	COOKIE_EXPERATION_IN_DAYS,
@@ -10,7 +11,7 @@ import { logoutUser, useAuthQuery } from "../hooks/auth.queries";
 
 import { EMPTY_USER } from "@/features/auth/consts";
 import { AuthContextType } from "@/features/auth/types";
-import { AxiosError } from "axios";
+
 import Cookies from "js-cookie";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import {
@@ -47,11 +48,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 		data: user = EMPTY_USER,
 		refetch: refetchUser,
 		isLoading: loading,
+		isError: authError,
 	} = useAuthQuery(token);
 
 	useEffect(() => {
-		if (!token && !pathname.includes("auth")) redirect("/auth");
-	}, [token, pathname]);
+		if ((!token || authError) && !pathname.includes("auth")) {
+			redirect("/auth");
+		}
+	}, [token, pathname, authError]);
 
 	const handleSuccess = useCallback(
 		(access_token: string) => {
@@ -65,19 +69,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 		[router, refetchUser]
 	);
 
-	const handleError = useCallback(
-		(err: AxiosError<{ detail: { msg: string }[] | string }>) => {
-			const error = err as AxiosError<{ detail: { msg: string }[] | string }>;
-			const detail = error.response?.data?.detail;
-			const errorMessage = Array.isArray(detail)
-				? detail.map((item) => item.msg).join(" ")
-				: typeof detail === "string"
-				? detail
-				: "Unexpected error occurred";
-			alert(errorMessage);
-		},
-		[]
-	);
+	const handleError = useCallback((err: AxiosError) => {
+		const detail = (
+			err.response?.data as { detail?: string | { msg: string }[] }
+		)?.detail;
+		const errorMessage = Array.isArray(detail)
+			? detail.map((item: { msg: string }) => item.msg).join(" ")
+			: typeof detail === "string"
+			? detail
+			: "Unexpected error occurred";
+		alert(errorMessage);
+	}, []);
 
 	const logout = useCallback(() => {
 		logoutUser();

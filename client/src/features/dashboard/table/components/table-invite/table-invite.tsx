@@ -46,6 +46,8 @@ const InviteModal: React.FC<InviteModalProps> = ({
 		isError: friendsError,
 	} = useFriendsQuery();
 
+	console.log("friendsList", friendsList);
+
 	if (friendsError) alert("Error fetching friends list");
 	const friends = formatFriendsList(friendsList?.friends);
 

@@ -25,15 +25,6 @@ export default function GenericTable<T>({
 	pagination,
 	onPageChange,
 }: GenericTableProps<T>) {
-	if (!data.length) {
-		return (
-			<div className={styles.emptyTable}>
-				<DatabaseBackup className={styles.emptyTableIcon} size={40} />
-				<div className={styles.emptyTableText}>No Data to show</div>
-			</div>
-		);
-	}
-
 	const [searchTerm, setSearchTerm] = useState<string>("");
 	const debounceTimeoutId = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -53,7 +44,12 @@ export default function GenericTable<T>({
 		};
 	}, [debounceTimeoutId]);
 
-	const tableData = (
+	const tableData = !data.length ? (
+		<div className={styles.emptyTable}>
+			<DatabaseBackup className={styles.emptyTableIcon} size={40} />
+			<div className={styles.emptyTableText}>No Data to show</div>
+		</div>
+	) : (
 		<table className={styles.table}>
 			<thead className={styles.tableHead}>
 				<tr>

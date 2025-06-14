@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useFetchStats = () => {
 	return useQuery({
-		queryKey: ["monthly-stats"],
+		queryKey: ["stats"],
 		queryFn: () => statisticsService.getStatistics(),
 	});
 };

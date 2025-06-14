@@ -1,10 +1,10 @@
 import { api } from "@/clients/api-client";
 import { DashboardStatsType } from "@/features/dashboard/main/types";
-import { MonthlyStatsProps } from "@/features/dashboard/statistics/types";
+import { UserStatsType } from "@/features/dashboard/statistics/types";
 
 class StatisticsService {
-    async getStatistics(): Promise<MonthlyStatsProps[]> {
-        return api.getData<MonthlyStatsProps[]>("/statistics/monthly")
+    async getStatistics(): Promise<UserStatsType> {
+        return api.getData<UserStatsType>("/statistics/")
     }
 
     async getDashStats(): Promise<DashboardStatsType> {

@@ -1,6 +1,9 @@
 "use client";
 
-import { MonthlyStatsProps } from "@/features/dashboard/statistics/types";
+import {
+	MonthlyStatsProps,
+	UserStatsType,
+} from "@/features/dashboard/statistics/types";
 import styles from "./styles.module.css";
 
 import LineChart from "@/features/common/components/line-chart/line-chart";
@@ -10,11 +13,7 @@ import { ChartMetrics } from "@/features/dashboard/statistics/consts";
 import { useFetchStats } from "@/features/dashboard/statistics/hooks/statistics.queries";
 
 const StatisticsPage = () => {
-	const {
-		data = [] as MonthlyStatsProps[],
-		isLoading,
-		isError,
-	} = useFetchStats();
+	const { data = {} as UserStatsType, isLoading, isError } = useFetchStats();
 
 	if (isLoading) {
 		return <LoadingSpinner message="Loading statistics..." />;
@@ -23,37 +22,19 @@ const StatisticsPage = () => {
 	if (isError)
 		return <div className={styles.error}>Error loading data: {isError}</div>;
 
-	const totalProfit = data.reduce(
-		(sum: number, item: { profit: number }) => sum + item.profit,
-		0
-	);
+	const totalStats = data.stats;
+	const monthlyStats = data.monthly_stats;
 
-	const avgWinRate =
-		(data.reduce(
-			(sum: number, item: { win_rate: number }) => sum + item.win_rate,
-			0
-		) /
-			(data.length || 1)) *
-		100;
-
-	const totalTables = data.reduce(
-		(sum: number, item: { tables_played: number }) => sum + item.tables_played,
-		0
-	);
-
-	const totalDuration = data
-		.reduce(
-			(sum: number, item: { hours_played: number }) => sum + item.hours_played,
-			0
-		)
-		.toFixed(1);
+	const avgProfit = totalStats.total_profit / monthlyStats.length;
+	const avgTablesPlayed = totalStats.tables_played / monthlyStats.length;
+	const avgHoursPlayed = totalStats.hours_played / monthlyStats.length;
 
 	const lineChartData = Object.keys(ChartMetrics || []).map((metric) => {
 		const seriesData: NivoSeries[] = [
 			{
 				id: ChartMetrics[metric].label,
 				colors: ChartMetrics[metric].colors,
-				data: data.map((item: MonthlyStatsProps) => ({
+				data: monthlyStats.map((item: MonthlyStatsProps) => ({
 					x: item.month,
 					y:
 						metric === "win_rate"
@@ -82,36 +63,36 @@ const StatisticsPage = () => {
 			{/* Summary Cards */}
 			<div className={styles.statsGrid}>
 				<div className={styles.statCard}>
-					<h3 className={styles.statTitle}>Total Profit</h3>
+					<h3 className={styles.statTitle}>Average Profit</h3>
 					<p
 						className={`${styles.statValueBase} ${
-							totalProfit >= 0
+							avgProfit >= 0
 								? styles.statValuePositive
 								: styles.statValueNegative
 						}`}
 					>
-						{}${totalProfit.toFixed(2)}
+						{}${avgProfit.toFixed(1)}
 					</p>
 				</div>
 				<div className={styles.statCard}>
 					<h3 className={styles.statTitle}>Average Win Rate</h3>
 					<p
 						className={`${styles.statValueBase} ${
-							avgWinRate >= 0.5
+							totalStats.win_rate >= 0.5
 								? styles.statValuePositive
 								: styles.statValueNegative
 						}`}
 					>
-						{avgWinRate.toFixed(1)}%
+						{totalStats.win_rate.toFixed(1)}%
 					</p>
 				</div>
 				<div className={styles.statCard}>
-					<h3 className={styles.statTitle}>Total Tables</h3>
-					<p className={styles.statValueBase}>{totalTables}</p>
+					<h3 className={styles.statTitle}>Average Tables</h3>
+					<p className={styles.statValueBase}>{avgTablesPlayed.toFixed(1)}</p>
 				</div>
 				<div className={styles.statCard}>
-					<h3 className={styles.statTitle}>Total Hours</h3>
-					<p className={styles.statValueBase}>{totalDuration}</p>
+					<h3 className={styles.statTitle}>Average Hours</h3>
+					<p className={styles.statValueBase}>{avgHoursPlayed.toFixed(2)}h</p>
 				</div>
 			</div>
 

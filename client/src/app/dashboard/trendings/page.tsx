@@ -10,7 +10,7 @@ import styles from "./styles.module.css";
 
 const TrendingsPage = () => {
 	const { data, isLoading, isError } = useTrendingsQuery();
-
+	console.log(data);
 	if (isLoading) {
 		return <LoadingSpinner message="Loading trendings data..." />;
 	}
@@ -21,6 +21,7 @@ const TrendingsPage = () => {
 	const avgPotSize = data?.average_pot_size.toFixed(1) || "0";
 
 	const avgWinRate = (data?.average_win_rate || 0) * 100;
+	// const avgBuyIn = data?.average_buy_in.toFixed(1) || "0";
 
 	const avgDuration = data?.average_hours_played.toFixed(1) || "0.0";
 
@@ -93,7 +94,7 @@ const TrendingsPage = () => {
 			<div className={styles.statsGrid}>
 				<div className={styles.statCard}>
 					<h3 className={styles.statTitle}>Average Pot Size </h3>
-					<div className={styles.statValueBase}>{avgPotSize}</div>
+					<div className={styles.statValueBase}>${avgPotSize}</div>
 				</div>
 				<div className={styles.statCard}>
 					<h3 className={styles.statTitle}>Average Win Rate</h3>
@@ -109,7 +110,7 @@ const TrendingsPage = () => {
 				</div>
 				<div className={styles.statCard}>
 					<h3 className={styles.statTitle}>Average Hours Per Game</h3>
-					<div className={styles.statValueBase}>{avgDuration}</div>
+					<div className={styles.statValueBase}>{avgDuration}h</div>
 				</div>
 			</div>
 

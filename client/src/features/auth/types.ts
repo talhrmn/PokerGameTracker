@@ -2,6 +2,14 @@ import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { AuthTabType } from "./consts";
 
+export interface ErrorResponseDetail {
+  msg?: string;
+}
+
+export interface ErrorResponse {
+  detail?: string | ErrorResponseDetail[];
+}
+
 export interface UserType {
   username: string;
   email: string;
