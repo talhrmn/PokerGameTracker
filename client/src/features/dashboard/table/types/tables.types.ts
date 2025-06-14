@@ -16,6 +16,11 @@ export interface Table {
   minimum_buy_in: number;
   maximum_players: number;
   creator_id: string;
-  blind_structure?: string;
+  blind_structure: string;
   description?: string;
+}
+
+export interface TablesData {
+  tables: Table[];
+  count: number;
 }

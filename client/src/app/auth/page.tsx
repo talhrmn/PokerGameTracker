@@ -1,7 +1,7 @@
 "use client";
 
-import LoginForm from "@/features/auth/components/login-form";
-import SignUpForm from "@/features/auth/components/signup-form";
+import LoginForm from "@/features/auth/components/auth-forms/login-form";
+import SignUpForm from "@/features/auth/components/auth-forms/signup-form";
 import { useAuth } from "@/features/auth/contexts/context";
 
 const AuthPage = () => {

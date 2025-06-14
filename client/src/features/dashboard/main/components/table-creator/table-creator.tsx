@@ -1,68 +1,53 @@
-import formStyles from "@/features/dashboard/main/components/table-creator/styles.module.css";
+// components/TableCreatorModal.tsx
 
-import PokerTableForm from "@/features/common/components/poker-table-form/poker-table-form";
-import { TableForm } from "@/features/common/types";
+import { TableForm } from "@/features/common/components/table-form/table-form";
+import { TableGameFormProps } from "@/features/common/types";
+import { useTableCreatorActions } from "@/features/dashboard/main/hooks/table-creator.hook";
 import { useCreateTable } from "@/features/dashboard/table/hooks/table.queries";
-import { CalendarCheck, CircleX, Plus } from "lucide-react";
-import { useState } from "react";
+import { Plus } from "lucide-react";
+import React, { useState } from "react";
 import { DEFAULT_FORM_STATE } from "../../consts/table-creator.consts";
 import styles from "./styles.module.css";
+import { ActionButton } from "@/features/common/components/action-button/action-button";
 
-const TableCreator = () => {
+export const TableCreatorModal: React.FC = () => {
 	const [isFormOpen, setIsFormOpen] = useState(false);
-
-	const formTitle = "Create New Poker Table";
-
 	const { mutate: createTableMutation, isPending: loading } = useCreateTable();
 
-	const onClose = () => {
+	const handleSubmit = (params: TableGameFormProps) => {
+		createTableMutation(params);
+	};
+
+	const handleClose = () => {
 		setIsFormOpen(false);
 	};
 
-	const tableFormActions = (
-		<>
-			<button
-				type="button"
-				onClick={onClose}
-				className={formStyles.cancelButton}
-				disabled={loading}
-			>
-				<CircleX size={16} style={{ marginRight: "0.5rem" }} />
-				Cancel
-			</button>
-			<button
-				type="submit"
-				className={formStyles.submitButton}
-				disabled={loading}
-			>
-				<CalendarCheck size={16} style={{ marginRight: "0.5rem" }} />
-				{loading ? "Creating..." : "Create Table"}
-			</button>
-		</>
-	);
+	const actions = useTableCreatorActions(handleClose, loading);
 
 	return (
 		<div className={styles.container}>
-			<button
-				type="button"
-				className={styles.newTableButton}
-				onClick={() => setIsFormOpen(true)}
-			>
-				<Plus className={styles.buttonIcon} />
-				Schedule Game
-			</button>
+			<ActionButton
+				action={{
+					id: "create-table",
+					type: "button",
+					label: "Schedule Game",
+					icon: Plus,
+					variant: "danger",
+					onClick: () => setIsFormOpen(true),
+				}}
+				globalLoading={loading}
+			/>
+
 			{isFormOpen && (
-				<PokerTableForm
-					formTitle={formTitle}
+				<TableForm
+					title="Create New Poker Table"
 					initialData={DEFAULT_FORM_STATE}
-					handleFormSubmit={(params: TableForm) => createTableMutation(params)}
-					onClose={onClose}
-					formActions={tableFormActions}
-					editDisabled={false}
+					onSubmit={handleSubmit}
+					onClose={handleClose}
+					actions={actions}
+					loading={loading}
 				/>
 			)}
 		</div>
 	);
 };
-
-export default TableCreator;

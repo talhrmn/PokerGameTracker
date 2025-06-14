@@ -11,7 +11,6 @@
 	margin-top: 2rem;
 }
 
-.loadingContainer,
 .errorContainer {
 	display: flex;
 	flex-direction: column;
@@ -20,22 +19,6 @@
 	min-height: 100vh;
 	background-color: #0a1c28;
 	color: #f0f0f0;
-}
-
-.loadingSpinner {
-	width: 50px;
-	height: 50px;
-	border: 5px solid rgba(255, 255, 255, 0.3);
-	border-radius: 50%;
-	border-top-color: #f0f0f0;
-	animation: spin 1s ease-in-out infinite;
-	margin-bottom: 1rem;
-}
-
-@keyframes spin {
-	to {
-		transform: rotate(360deg);
-	}
 }
 
 .button {

@@ -1,4 +1,4 @@
-import { TableForm } from "@/features/common/types";
+import { TableGameFormProps } from "@/features/common/types";
 
 export const DEFAULT_FORM_STATE = {
   name: "",
@@ -10,4 +10,4 @@ export const DEFAULT_FORM_STATE = {
   game_type: "Texas Hold'em",
   blind_structure: "1/2",
   description: "",
-} as TableForm;
+} as TableGameFormProps;

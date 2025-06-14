@@ -1,23 +1,18 @@
 "use client";
 
 import LineChart from "@/features/common/components/line-chart/line-chart";
+import LoadingSpinner from "@/features/common/components/loading-spinner/loading-spinner";
 import { NivoSeries } from "@/features/common/types";
 import { ChartMetrics, COLORS_LIST } from "@/features/dashboard/trends/consts";
 import { useTrendingsQuery } from "@/features/dashboard/trends/hooks/trendings.queries";
 import { TrendsProps } from "@/features/dashboard/trends/types";
 import styles from "./styles.module.css";
-import commonStyles from "@/features/common/styles.module.css";
 
 const TrendingsPage = () => {
 	const { data, isLoading, isError } = useTrendingsQuery();
 
 	if (isLoading) {
-		return (
-			<div className={commonStyles.loadingContainer}>
-				<div className={commonStyles.loadingSpinner}></div>
-				<p>Loading table data...</p>
-			</div>
-		);
+		return <LoadingSpinner message="Loading trendings data..." />;
 	}
 
 	if (isError)

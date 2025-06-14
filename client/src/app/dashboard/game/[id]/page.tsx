@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/features/auth/contexts/context";
+import LoadingSpinner from "@/features/common/components/loading-spinner/loading-spinner";
 import GameControls from "@/features/dashboard/game/components/game-controls/game-controls";
 import GameHeader from "@/features/dashboard/game/components/game-header/game-header";
 import PokerTable from "@/features/dashboard/game/components/game-table/game-table";
@@ -14,7 +15,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import styles from "./styles.module.css";
 
-export default function PokerGamePage() {
+const GamePage = () => {
 	const { user } = useAuth();
 	const router = useRouter();
 	const params = useParams();
@@ -51,12 +52,7 @@ export default function PokerGamePage() {
 	};
 
 	if (isLoading) {
-		return (
-			<div className={styles.loadingContainer}>
-				<div className={styles.loadingSpinner}></div>
-				<p>Loading game data...</p>
-			</div>
-		);
+		return <LoadingSpinner message="Loading game data..." />;
 	}
 
 	if (isError || !game) {
@@ -106,4 +102,6 @@ export default function PokerGamePage() {
 			)}
 		</>
 	);
-}
+};
+
+export default GamePage;

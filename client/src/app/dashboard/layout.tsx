@@ -12,7 +12,7 @@ export default function DashboardLayout({
 	return (
 		<div className={styles.dashboardContainer}>
 			<Navbar />
-			{children}
+			<main className={styles.mainContent}>{children}</main>
 		</div>
 	);
 }

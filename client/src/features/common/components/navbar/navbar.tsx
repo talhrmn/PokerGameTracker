@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styles from "./styles.module.css";
+import { ActionButton } from "@/features/common/components/action-button/action-button";
 
 export default function Navbar() {
 	const pathname = usePathname();
@@ -62,15 +63,16 @@ export default function Navbar() {
 
 				<div className={styles.navbarRight}>
 					<div className={styles.profileWrapper} ref={profileRef}>
-						<button
-							onClick={() => setIsProfileMenuOpen((prev) => !prev)}
-							className={styles.profileButton}
-						>
-							<span className={styles.profileName}>{user.username}</span>
-							<div className={styles.avatar}>
-								{user.username.charAt(0).toUpperCase()}
-							</div>
-						</button>
+						<ActionButton
+							action={{
+								id: "profile",
+								type: "button",
+								label: "Profile",
+								icon: User,
+								variant: "primary",
+								onClick: () => setIsProfileMenuOpen((prev) => !prev),
+							}}
+						/>
 						{isProfileMenuOpen && (
 							<div className={styles.profileDropdown}>
 								<Link href="/profile" className={styles.dropdownItem}>

@@ -1,50 +1,45 @@
 "use client";
 
-import { useAuth } from "@/features/auth/contexts/context";
 import GenericTable from "@/features/common/components/generic-table/generic-table";
-import TableDetailsModal from "@/features/dashboard/table/components/table-details/table-details";
-
+import LoadingSpinner from "@/features/common/components/loading-spinner/loading-spinner";
+import { TableDetailsModal } from "@/features/dashboard/table/components/table-details/table-details";
 import {
 	TABLE_TABS,
 	tableColumns,
 } from "@/features/dashboard/table/consts/tables.consts";
 import { useFetchTablesQuery } from "@/features/dashboard/table/hooks/table.queries";
-import { Table } from "@/features/dashboard/table/types/tables.types";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+	Table,
+	TablesData,
+} from "@/features/dashboard/table/types/tables.types";
+import { useCallback, useMemo, useState } from "react";
 
-export default function TablesPage() {
-	const { user } = useAuth();
-	const userId = user._id;
-
-	const {
-		data: tables = [] as Table[],
-		isError: tablesError,
-		// isLoading: tablesLoading,
-		refetch: refetchTables,
-	} = useFetchTablesQuery();
-
-	const [createdTables, setCreatedTables] = useState<Table[]>([]);
-	const [invitedTables, setInvitedTables] = useState<Table[]>([]);
+const TablesPage = () => {
 	const [activeTab, setActiveTab] = useState<string>(TABLE_TABS.created.key);
+	const [currentPage, setCurrentPage] = useState(1);
 	const [selectedTable, setSelectedTable] = useState<Table | null>(null);
 
-	useEffect(() => {
-		if (tablesError) {
-			console.error("Failed to fetch tables");
-			setCreatedTables([]);
-			setInvitedTables([]);
-		}
-	}, [tablesError]);
+	const tablesPerPage = 10;
 
-	useEffect(() => {
-		if (!tables || tables.length === 0) {
-			setCreatedTables([]);
-			setInvitedTables([]);
-			return;
-		}
-		setCreatedTables(tables.filter((t) => t.creator_id === userId));
-		setInvitedTables(tables.filter((t) => t.creator_id !== userId));
-	}, [tables, userId]);
+	const skip = useMemo(
+		() => (currentPage - 1) * tablesPerPage,
+		[currentPage, tablesPerPage]
+	);
+
+	const {
+		data: tablesData = {} as TablesData,
+		isLoading,
+		isError: tablesError,
+		refetch: refetchTables,
+	} = useFetchTablesQuery(activeTab, tablesPerPage, skip);
+
+	const { tables = [], count = 0 } = tablesData;
+
+	if (tablesError) console.error("Failed to fetch tables");
+
+	const handlePageChange = (newPage: number) => {
+		setCurrentPage(newPage);
+	};
 
 	const handleRowClick = useCallback((table: Table) => {
 		setSelectedTable(table);
@@ -54,29 +49,38 @@ export default function TablesPage() {
 		setSelectedTable(null);
 	}, []);
 
-	const handleUpdateTables = useCallback(async () => {
-		try {
-			await refetchTables();
-		} catch (err) {
-			console.error("Refetch tables failed", err);
-		}
-	}, [refetchTables]);
+	const totalPages = count ? Math.ceil(count / tablesPerPage) : 1;
 
-	const tableData = useMemo(() => {
-		return activeTab === TABLE_TABS.created.key ? createdTables : invitedTables;
-	}, [activeTab, createdTables, invitedTables]);
+	const onUpdateTables = () => {
+		refetchTables();
+		alert("Table updated successfully!");
+	};
+
+	if (isLoading) {
+		return <LoadingSpinner message="Loading tables data..." />;
+	}
 
 	return (
 		<>
 			<GenericTable
-				data={tableData}
+				data={tables}
 				columns={tableColumns}
 				title="My Tables"
 				tabs={Object.values(TABLE_TABS)}
 				activeTab={activeTab}
-				onTabChange={(tab) => setActiveTab(tab)}
+				onTabChange={(tab) => {
+					setActiveTab(tab);
+					setCurrentPage(1);
+				}}
 				onRowClick={handleRowClick}
 				titleBarColor="#f56565"
+				pagination={{
+					currentPage,
+					totalPages,
+					totalItems: count || 1,
+					itemsPerPage: tablesPerPage,
+				}}
+				onPageChange={handlePageChange}
 			/>
 
 			{selectedTable && (
@@ -84,9 +88,11 @@ export default function TablesPage() {
 					table={selectedTable}
 					isCreator={activeTab === TABLE_TABS.created.key}
 					onClose={handleCloseModal}
-					onUpdateTables={handleUpdateTables}
+					onUpdateTables={onUpdateTables}
 				/>
 			)}
 		</>
 	);
-}
+};
+
+export default TablesPage;

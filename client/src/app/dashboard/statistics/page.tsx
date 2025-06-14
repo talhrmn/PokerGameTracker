@@ -4,7 +4,7 @@ import { MonthlyStatsProps } from "@/features/dashboard/statistics/types";
 import styles from "./styles.module.css";
 
 import LineChart from "@/features/common/components/line-chart/line-chart";
-import commonStyles from "@/features/common/styles.module.css";
+import LoadingSpinner from "@/features/common/components/loading-spinner/loading-spinner";
 import { NivoSeries } from "@/features/common/types";
 import { ChartMetrics } from "@/features/dashboard/statistics/consts";
 import { useFetchStats } from "@/features/dashboard/statistics/hooks/statistics.queries";
@@ -17,12 +17,7 @@ const StatisticsPage = () => {
 	} = useFetchStats();
 
 	if (isLoading) {
-		return (
-			<div className={commonStyles.loadingContainer}>
-				<div className={commonStyles.loadingSpinner}></div>
-				<p>Loading statistics...</p>
-			</div>
-		);
+		return <LoadingSpinner message="Loading statistics..." />;
 	}
 
 	if (isError)

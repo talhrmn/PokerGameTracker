@@ -1,53 +1,37 @@
+// components/TableForm.tsx
+
+import { ActionButton } from "@/features/common/components/action-button/action-button";
 import { BLIND_OPTIONS, POKER_GAME_OPTIONS } from "@/features/common/consts";
-import { PokerTableFormProps } from "@/features/common/types";
+import { useTableForm } from "@/features/common/hooks/table-form.hook";
+import { TableFormProps } from "@/features/common/types";
 import { Calendar, DollarSign, PlayCircle, Users, X } from "lucide-react";
-import React, { useState } from "react";
+import React from "react";
 import styles from "./styles.module.css";
 
-const PokerTableForm: React.FC<PokerTableFormProps> = ({
-	formTitle,
+export const TableForm: React.FC<TableFormProps> = ({
+	title,
 	initialData,
-	handleFormSubmit,
+	onSubmit,
 	onClose,
-	formActions,
-	editDisabled,
+	actions,
+	disabled = false,
+	loading: externalLoading = false,
 }) => {
-	const [formData, setFormData] = useState(initialData);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState("");
+	const {
+		formData,
+		loading: internalLoading,
+		error,
+		handleInputChange,
+		handleSubmit,
+	} = useTableForm(initialData, onSubmit, onClose);
 
-	const handleInputChange = (
-		e: React.ChangeEvent<
-			HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-		>
-	) => {
-		const { name, value } = e.target;
-		setFormData({ ...formData, [name]: value });
-	};
+	const isLoading = internalLoading || externalLoading;
+	const isDisabled = disabled || isLoading;
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setLoading(true);
-		setError("");
-
-		try {
-			const dateTime = new Date(
-				`${formData.scheduled_date}T${formData.scheduled_time}`
-			);
-			handleFormSubmit({
-				...formData,
-				date: dateTime.toISOString(),
-			});
-			onClose();
-		} catch (err: unknown) {
-			console.error(err);
-			setError(err as string);
-		} finally {
-			setLoading(false);
-		}
-	};
-
-	const formDisabled = editDisabled || loading;
+	const processedActions = actions.map((action) => ({
+		...action,
+		onClick: action.type === "submit" ? undefined : action.onClick,
+	}));
 
 	return (
 		<div className={styles.modalOverlay} onClick={onClose}>
@@ -58,7 +42,7 @@ const PokerTableForm: React.FC<PokerTableFormProps> = ({
 
 				<h3 className={styles.formTitle}>
 					<PlayCircle className={styles.titleIcon} />
-					{formTitle}
+					{title}
 				</h3>
 
 				{error && <div className={styles.errorMessage}>{error}</div>}
@@ -74,7 +58,7 @@ const PokerTableForm: React.FC<PokerTableFormProps> = ({
 								onChange={handleInputChange}
 								className={styles.inputField}
 								required
-								disabled={formDisabled}
+								disabled={isDisabled}
 							/>
 						</div>
 
@@ -87,7 +71,7 @@ const PokerTableForm: React.FC<PokerTableFormProps> = ({
 								onChange={handleInputChange}
 								className={styles.inputField}
 								required
-								disabled={formDisabled}
+								disabled={isDisabled}
 							/>
 						</div>
 
@@ -102,7 +86,7 @@ const PokerTableForm: React.FC<PokerTableFormProps> = ({
 								onChange={handleInputChange}
 								className={styles.inputField}
 								required
-								disabled={formDisabled}
+								disabled={isDisabled}
 							/>
 						</div>
 
@@ -115,7 +99,7 @@ const PokerTableForm: React.FC<PokerTableFormProps> = ({
 								onChange={handleInputChange}
 								className={styles.inputField}
 								required
-								disabled={formDisabled}
+								disabled={isDisabled}
 							/>
 						</div>
 
@@ -131,7 +115,7 @@ const PokerTableForm: React.FC<PokerTableFormProps> = ({
 								className={styles.inputField}
 								min="1"
 								required
-								disabled={formDisabled}
+								disabled={isDisabled}
 							/>
 						</div>
 
@@ -148,7 +132,7 @@ const PokerTableForm: React.FC<PokerTableFormProps> = ({
 								min="2"
 								max="14"
 								required
-								disabled={formDisabled}
+								disabled={isDisabled}
 							/>
 						</div>
 
@@ -159,7 +143,7 @@ const PokerTableForm: React.FC<PokerTableFormProps> = ({
 								value={formData.game_type}
 								onChange={handleInputChange}
 								className={styles.selectField}
-								disabled={formDisabled}
+								disabled={isDisabled}
 							>
 								{POKER_GAME_OPTIONS.map((item, index) => (
 									<option key={index} value={item}>
@@ -176,7 +160,7 @@ const PokerTableForm: React.FC<PokerTableFormProps> = ({
 								value={formData.blind_structure}
 								onChange={handleInputChange}
 								className={styles.selectField}
-								disabled={formDisabled}
+								disabled={isDisabled}
 							>
 								{BLIND_OPTIONS.map((item, index) => (
 									<option key={index} value={item}>
@@ -196,16 +180,22 @@ const PokerTableForm: React.FC<PokerTableFormProps> = ({
 								onChange={handleInputChange}
 								className={styles.textareaField}
 								rows={3}
-								disabled={formDisabled}
+								disabled={isDisabled}
 							/>
 						</div>
 					</div>
 
-					<div className={styles.formActions}>{formActions}</div>
+					<div className={styles.formActions}>
+						{processedActions.map((action) => (
+							<ActionButton
+								key={action.id}
+								action={action}
+								globalLoading={isLoading}
+							/>
+						))}
+					</div>
 				</form>
 			</div>
 		</div>
 	);
 };
-
-export default PokerTableForm;

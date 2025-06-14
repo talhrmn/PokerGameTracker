@@ -10,7 +10,7 @@ import {
 import { GameProps } from "@/features/dashboard/game/types/games.types";
 import { useMemo, useState } from "react";
 
-export default function Games() {
+const Games = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [selectedGame, setSelectedGame] = useState<GameProps | null>(null);
 	const gamesPerPage = 10;
@@ -75,4 +75,6 @@ export default function Games() {
 			)}
 		</>
 	);
-}
+};
+
+export default Games;

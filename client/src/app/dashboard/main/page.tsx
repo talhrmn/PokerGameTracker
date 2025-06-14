@@ -8,7 +8,7 @@ import { ACCESS_CARDS } from "@/features/dashboard/main/consts/quic-access-cards
 import { useFetchDashStatsQuery } from "@/features/dashboard/statistics/hooks/statistics.queries";
 import styles from "./styles.module.css";
 
-export default function Main() {
+const Main = () => {
 	const {
 		data: dashboardStats = DASHBOARD_STATS_DEFAULT,
 		isLoading,
@@ -17,7 +17,7 @@ export default function Main() {
 
 	return (
 		<>
-			<div className={styles.mainContent}>
+			<main className={styles.mainContent}>
 				<div className={styles.quickStatsSection}>
 					<QuickStats
 						user_stats={dashboardStats.user_stats}
@@ -34,7 +34,9 @@ export default function Main() {
 				<div className={styles.quickAccessSection}>
 					<QuickAccessCards cards={ACCESS_CARDS} />
 				</div>
-			</div>
+			</main>
 		</>
 	);
-}
+};
+
+export default Main;

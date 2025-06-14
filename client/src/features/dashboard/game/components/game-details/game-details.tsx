@@ -22,6 +22,7 @@ import {
 import { useRouter } from "next/navigation";
 import React from "react";
 import styles from "./styles.module.css";
+import { ActionButton } from "@/features/common/components/action-button/action-button";
 
 const GameDetailsModal: React.FC<GameDetailsProps> = ({
 	game,
@@ -42,15 +43,16 @@ const GameDetailsModal: React.FC<GameDetailsProps> = ({
 	};
 
 	const goToGameBtn = (
-		<button
-			type="button"
-			onClick={handleGoToGame}
-			className={styles.goToGameButton}
-			disabled={loading}
-		>
-			<LogIn size={16} style={{ marginRight: "0.5rem" }} />
-			Enter Game
-		</button>
+		<ActionButton
+			action={{
+				id: "goToGame",
+				type: "button",
+				label: "Enter Game",
+				icon: LogIn,
+				variant: "success",
+				onClick: handleGoToGame,
+			}}
+		/>
 	);
 
 	const formatDate = (dateString: string) => {

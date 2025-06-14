@@ -1,7 +1,7 @@
 "use client";
 
 import GenericTable from "@/features/common/components/generic-table/generic-table";
-import commonStyles from "@/features/common/styles.module.css";
+import LoadingSpinner from "@/features/common/components/loading-spinner/loading-spinner";
 import {
 	FRIENDS_TABS,
 	tableColumns,
@@ -18,7 +18,7 @@ import { Check, MailPlus, Trash2, X } from "lucide-react";
 import { useCallback, /* useEffect, */ useMemo, useState } from "react";
 import styles from "./styles.module.css";
 
-export default function Friends() {
+const FriendsPage = () => {
 	const [activeTab, setActiveTab] = useState<string>(FRIENDS_TABS.friends.key);
 
 	const [searchTerm, setSearchTerm] = useState<string>("");
@@ -125,12 +125,7 @@ export default function Friends() {
 	// };
 
 	if (isLoading) {
-		return (
-			<div className={commonStyles.loadingContainer}>
-				<div className={commonStyles.loadingSpinner}></div>
-				<p>Loading game data...</p>
-			</div>
-		);
+		return <LoadingSpinner message="Loading friends data..." />;
 	}
 
 	if (isError) return <div>Error loading friends data</div>;
@@ -164,4 +159,6 @@ export default function Friends() {
         )} */}
 		</>
 	);
-}
+};
+
+export default FriendsPage;
