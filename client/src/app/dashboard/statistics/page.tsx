@@ -1,24 +1,27 @@
 "use client";
 
-import styles from "@/app/dashboard/statistics/styles.module.css";
-import { MonthlyStatsProps } from "@/app/dashboard/statistics/types";
+import { MonthlyStatsProps } from "@/features/dashboard/statistics/types";
+import styles from "./styles.module.css";
 
-import LineChart from "@/app/dashboard/components/line-chart/line-chart";
-import { NivoSeries } from "@/app/dashboard/components/line-chart/types";
-import { ChartMetrics } from "@/app/dashboard/statistics/consts";
-import { useFetchStats } from "@/app/dashboard/statistics/statistics-queries";
+import LineChart from "@/features/common/components/line-chart/line-chart";
+import LoadingSpinner from "@/features/common/components/loading-spinner/loading-spinner";
+import { NivoSeries } from "@/features/common/types";
+import { ChartMetrics } from "@/features/dashboard/statistics/consts";
+import { useFetchStats } from "@/features/dashboard/statistics/hooks/statistics.queries";
 
 const StatisticsPage = () => {
 	const {
 		data = [] as MonthlyStatsProps[],
-		isLoading: loading,
-		isError: error,
+		isLoading,
+		isError,
 	} = useFetchStats();
 
-	if (loading)
-		return <div className={styles.loading}>Loading statistics...</div>;
-	if (error)
-		return <div className={styles.error}>Error loading data: {error}</div>;
+	if (isLoading) {
+		return <LoadingSpinner message="Loading statistics..." />;
+	}
+
+	if (isError)
+		return <div className={styles.error}>Error loading data: {isError}</div>;
 
 	const totalProfit = data.reduce(
 		(sum: number, item: { profit: number }) => sum + item.profit,
@@ -79,8 +82,7 @@ const StatisticsPage = () => {
 			  });
 
 	return (
-		<div className={styles.statsContainer}>
-			<h1 className={styles.title}>Statistics Over Time</h1>
+		<>
 			{/* Summary Cards */}
 			<div className={styles.statsGrid}>
 				<div className={styles.statCard}>
@@ -132,7 +134,7 @@ const StatisticsPage = () => {
 					</div>
 				))}
 			</div>
-		</div>
+		</>
 	);
 };
 

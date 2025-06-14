@@ -1,7 +1,7 @@
 "use client";
 
-import { AuthProvider } from "@/app/auth/context/context";
-import { queryClient } from "@/app/clients/query-client";
+import { AuthProvider } from "@/features/auth/contexts/context";
+import { queryClient } from "@/clients/query-client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Geist, Geist_Mono } from "next/font/google";

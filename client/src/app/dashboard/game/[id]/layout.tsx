@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import styles from "./styles.module.css";
 
 export const metadata: Metadata = {
 	title: "Poker Game | Live Table",
@@ -11,5 +12,5 @@ export default function GameLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	return children;
+	return <main className={styles.mainGameContainer}>{children}</main>;
 }

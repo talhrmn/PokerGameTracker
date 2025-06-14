@@ -3,6 +3,12 @@
 	min-height: 100vh;
 	height: fit-content;
 	width: -webkit-fill-available;
-	background-color: #f0f2f5; /* light gray, like many modern UIs */
+	background-color: #f0f2f5;
 	font-family: "Arial", sans-serif;
+}
+
+.mainContent {
+	padding: 1rem;
+	background-color: #cecfd183;
+	border-radius: 0.2rem;
 }

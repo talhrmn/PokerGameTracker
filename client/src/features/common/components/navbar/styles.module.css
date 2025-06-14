@@ -1,0 +1,153 @@
+.navbar {
+	position: sticky;
+	top: 0;
+	width: 100%;
+	border-bottom: 1px solid #eaeaea;
+	z-index: 100;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.navbarContainer {
+	margin: 0;
+	padding: 1rem 1.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.navbarLeft {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 1rem;
+	margin: 1rem 0;
+}
+
+.logoLink {
+	display: flex;
+	align-items: center;
+	text-decoration: none;
+}
+
+.logoText {
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: #111111;
+}
+
+.logoSymbol {
+	margin-left: 0.25rem;
+	font-size: 1.25rem;
+	color: #172736;
+}
+
+.menuWrapper {
+	flex: 1 1 auto;
+	overflow-x: auto;
+}
+
+.menuList {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	flex-wrap: nowrap;
+}
+
+.menuItem {
+	display: block;
+	padding: 0.5rem 0.75rem;
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: #555555;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	text-decoration: none;
+	transition: border-color 0.2s ease, color 0.2s ease, font-weight 0.2s ease;
+	white-space: nowrap;
+}
+
+.menuItem:hover {
+	border-color: rgba(35, 35, 35, 0.1);
+	font-weight: 550;
+	color: #31363a;
+}
+
+.menuItemActive {
+	display: block;
+	padding: 0.5rem 0.75rem;
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: #31363a;
+	border-radius: 4px;
+	text-decoration: none;
+	border-bottom: 0.1rem solid rgba(35, 35, 35, 0.3);
+	white-space: nowrap;
+	transition: background-color 0.2s ease;
+}
+
+.menuItemActive:hover {
+	background-color: rgba(130, 116, 116, 0.3);
+}
+
+.navbarRight {
+	display: flex;
+	align-items: center;
+	position: relative;
+}
+
+.profileWrapper {
+	position: relative;
+}
+
+.profileButton:hover {
+	background-color: #ebebeb;
+}
+.profileButton:focus {
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.3);
+}
+
+.profileDropdown {
+	margin-top: 0.5rem;
+	position: absolute;
+	right: 0;
+	background-color: #ffffff;
+	border: 1px solid #e0e0e0;
+	border-radius: 6px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	min-width: 10rem;
+	z-index: 50;
+}
+
+.dropdownItem,
+.dropdownItemButton {
+	display: block;
+	width: 100%;
+	padding: 0.5rem 1rem;
+	font-size: 0.875rem;
+	color: #333333;
+	background: none;
+	border: none;
+	text-align: left;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.dropdownItem:hover,
+.dropdownItemButton:hover {
+	background-color: #f5f5f5;
+}
+.itemWithIcon {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.icon {
+	width: 1rem;
+	height: 1rem;
+	color: #555555;
+}

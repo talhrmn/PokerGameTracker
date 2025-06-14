@@ -1,0 +1,39 @@
+.header {
+	background: #fff;
+	padding: 24px 16px;
+	text-align: center;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.suits {
+	font-size: 1.25rem;
+	margin-bottom: 8px;
+}
+
+.black_suits {
+	color: #2d3748;
+}
+
+.red_suits {
+	color: #e53935;
+}
+
+.logo {
+	width: 48px;
+	height: 48px;
+	display: block;
+	margin: 0 auto 8px;
+}
+
+.title {
+	font-size: 1.75rem;
+	font-weight: 600;
+	color: #2d3748;
+	margin: 4px 0;
+}
+
+.tagline {
+	font-size: 0.875rem;
+	color: #718096;
+	margin: 0;
+}

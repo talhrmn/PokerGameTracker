@@ -1,8 +1,8 @@
 "use client";
 
-import Navbar from "@/app/dashboard/components/navbar/navbar";
-import styles from "@/app/dashboard/styles.module.css";
+import Navbar from "@/features/common/components/navbar/navbar";
 import React from "react";
+import styles from "./styles.module.css";
 
 export default function DashboardLayout({
 	children,
@@ -12,7 +12,7 @@ export default function DashboardLayout({
 	return (
 		<div className={styles.dashboardContainer}>
 			<Navbar />
-			{children}
+			<main className={styles.mainContent}>{children}</main>
 		</div>
 	);
 }

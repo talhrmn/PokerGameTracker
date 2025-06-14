@@ -1,19 +1,22 @@
 "use client";
 
-import LineChart from "@/app/dashboard/components/line-chart/line-chart";
-import { NivoSeries } from "@/app/dashboard/components/line-chart/types";
-import { ChartMetrics, COLORS_LIST } from "@/app/dashboard/trendings/consts";
-import styles from "@/app/dashboard/trendings/styles.module.css";
-import { useTrendingsQuery } from "@/app/dashboard/trendings/trendings-queries";
-import { TrendsProps } from "@/app/dashboard/trendings/types";
+import LineChart from "@/features/common/components/line-chart/line-chart";
+import LoadingSpinner from "@/features/common/components/loading-spinner/loading-spinner";
+import { NivoSeries } from "@/features/common/types";
+import { ChartMetrics, COLORS_LIST } from "@/features/dashboard/trends/consts";
+import { useTrendingsQuery } from "@/features/dashboard/trends/hooks/trendings.queries";
+import { TrendsProps } from "@/features/dashboard/trends/types";
+import styles from "./styles.module.css";
 
 const TrendingsPage = () => {
-	const { data, isLoading: loading, isError: error } = useTrendingsQuery();
+	const { data, isLoading, isError } = useTrendingsQuery();
 
-	if (loading)
-		return <div className={styles.loading}>Loading statistics...</div>;
-	if (error)
-		return <div className={styles.error}>Error loading data: {error}</div>;
+	if (isLoading) {
+		return <LoadingSpinner message="Loading trendings data..." />;
+	}
+
+	if (isError)
+		return <div className={styles.error}>Error loading data: {isError}</div>;
 
 	const avgPotSize = data?.average_pot_size.toFixed(1) || "0";
 
@@ -85,9 +88,7 @@ const TrendingsPage = () => {
 				});
 
 	return (
-		<div className={styles.trendsContainer}>
-			<h1 className={styles.title}>Game Trends Over Time</h1>
-
+		<>
 			{/* Summary Stats Cards */}
 			<div className={styles.statsGrid}>
 				<div className={styles.statCard}>
@@ -127,7 +128,7 @@ const TrendingsPage = () => {
 						</div>
 					))}
 			</div>
-		</div>
+		</>
 	);
 };
 

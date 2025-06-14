@@ -1,16 +1,16 @@
 "use client";
 
-import GenericTable from "@/app/dashboard/components/generic-table/generic-table";
-import GameDetailsModal from "@/app/dashboard/games/components/game-details/game-details";
-import { GAME_COLUMNS } from "@/app/dashboard/games/consts";
+import GenericTable from "@/features/common/components/generic-table/generic-table";
+import GameDetailsModal from "@/features/dashboard/game/components/game-details/game-details";
+import { GAME_COLUMNS } from "@/features/dashboard/game/consts/games.consts";
 import {
 	useFetchGamesQuery,
 	useTotalGamesCountQuery,
-} from "@/app/dashboard/games/games-queries";
-import { GameProps } from "@/app/dashboard/games/types";
+} from "@/features/dashboard/game/hooks/game.queries";
+import { GameProps } from "@/features/dashboard/game/types/games.types";
 import { useMemo, useState } from "react";
 
-export default function Games() {
+const Games = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [selectedGame, setSelectedGame] = useState<GameProps | null>(null);
 	const gamesPerPage = 10;
@@ -75,4 +75,6 @@ export default function Games() {
 			)}
 		</>
 	);
-}
+};
+
+export default Games;

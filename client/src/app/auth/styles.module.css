@@ -1,14 +1,11 @@
-/* styles.module.css */
-
 .authContainer {
-	/* full viewport height, center horizontally & vertically */
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	min-height: 100vh;
-	background-color: #f0f2f5; /* light gray, like many modern UIs */
+	background-color: #f0f2f5;
 	font-family: "Arial", sans-serif;
-	padding: 16px; /* in case of small screens */
+	padding: 16px;
 }
 
 .authCard {
@@ -25,14 +22,12 @@
 	margin-bottom: 16px;
 }
 
-/* Override Ant Design Tabs to be minimal */
 .antTabsOverride :global(.ant-tabs-nav) {
 	margin: 0;
 	padding: 0 16px;
 }
 
 .antTabsOverride :global(.ant-tabs-nav-list) {
-	/* remove extra spacing */
 	margin: 0;
 }
 
@@ -45,7 +40,7 @@
 }
 
 .antTabsOverride :global(.ant-tabs-tab:hover) {
-	color: #1890ff; /* AntD primary blue */
+	color: #1890ff;
 }
 
 .antTabsOverride :global(.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn) {
@@ -58,61 +53,16 @@
 	height: 2px;
 }
 
-/* Content wrapper: space above form content */
-.contentWrapper {
-	/* You can add spacing or separate children if needed */
+.authFormWrapper {
+	padding: 1rem;
 }
 
-/* Example form styles; adjust classNames in your form components accordingly */
-.form {
-	margin-top: 16px;
-}
-
-.input {
-	width: 100%;
-	height: 40px;
-	border: 1px solid #d9d9d9;
-	border-radius: 4px;
-	padding: 8px;
-	font-size: 14px;
-	box-sizing: border-box;
-	transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.input:focus {
-	border-color: #1890ff;
-	outline: none;
-	box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
-}
-
-.button {
-	width: 100%;
-	height: 40px;
-	margin-top: 16px;
-	background-color: #1890ff;
-	color: #ffffff;
-	border: none;
-	border-radius: 4px;
-	font-size: 15px;
-	font-weight: 500;
-	cursor: pointer;
-	transition: opacity 0.2s ease, box-shadow 0.2s ease;
-}
-
-.button:hover {
-	opacity: 0.85;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Error text under inputs */
-.ant-form-item-explain-error, /* for Ant Form errors */
-.errorText {
+.ant-form-item-explain-error {
 	color: #f5222d;
 	font-size: 12px;
 	margin-top: 4px;
 }
 
-/* If you used your own error class: */
 .errorText {
 	color: #f5222d;
 	font-size: 12px;
