@@ -12,7 +12,7 @@ from app.core.exceptions import (
 )
 from app.core.security import get_password_hash
 from app.repositories.user_repository import UserRepository
-from app.schemas.user import UserInput, UserDBInput, UserDBOutput, UserStats, MonthlyStats
+from app.schemas.user import UserInput, UserDBInput, UserDBOutput, UserStats, MonthlyStats, UserDBAuthOutput
 from app.services.base import BaseService
 
 
@@ -42,6 +42,22 @@ class UserService(BaseService[UserInput, UserDBOutput]):
         super().__init__(repository)
         self.repository = repository
         self.logger = logging.getLogger(self.__class__.__name__)
+
+    async def get_auth_user(self, username: str) -> Optional[UserDBAuthOutput]:
+        """
+        Get a user auth details.
+
+        Args:
+            username: The username to search for
+
+        Returns:
+            Optional[UserDBAuthOutput]: The user if found, None otherwise
+        """
+        try:
+            user = await self.repository.get_auth_user(username)
+            return UserDBAuthOutput(**user)
+        except Exception as e:
+            raise DatabaseException(detail=f"Failed to get user by username: {str(e)}")
 
     async def get_user_by_username(self, username: str) -> Optional[UserDBOutput]:
         """

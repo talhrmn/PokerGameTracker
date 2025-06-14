@@ -65,7 +65,7 @@ async def login(
         LoginResponse: Authentication token and type
     """
     # Get user by username
-    user = await user_service.get_user_by_username(form_data.username)
+    user = await user_service.get_auth_user(form_data.username)
 
     # Verify credentials
     if not user or not verify_password(form_data.password, user.password_hash):

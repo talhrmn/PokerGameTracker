@@ -8,7 +8,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from app.core.exceptions import DatabaseException
 from app.repositories.base import BaseRepository
 from app.schemas.game import GameStatusEnum
-from app.schemas.table import TableDBInput, TableDBOutput, PlayerStatusEnum, PlayerStatus
+from app.schemas.table import TableDBInput, TableDBOutput, PlayerStatusEnum, PlayerStatus, TableCountResponse
 
 
 class TableRepository(BaseRepository[TableDBInput, TableDBOutput]):
@@ -68,6 +68,75 @@ class TableRepository(BaseRepository[TableDBInput, TableDBOutput]):
             return await self.list(list_filter, skip=skip, limit=limit)
         except Exception as e:
             raise DatabaseException(detail=f"Failed to list tables for user: {str(e)}")
+
+    async def list_created(
+            self,
+            user_id: str,
+            status: Optional[str] = None,
+            skip: int = 0,
+            limit: int = 100
+    ) -> TableCountResponse:
+        """
+        List tables where user is a player. Optionally filter by status.
+
+        Args:
+            user_id: The ID of the user
+            status: Optional table status to filter by
+            skip: Number of tables to skip
+            limit: Maximum number of tables to return
+
+        Returns:
+            TableCountResponse: List and count of tables
+
+        Raises:
+            DatabaseException: If there's an error listing tables
+        """
+        try:
+            if not ObjectId.is_valid(user_id):
+                return []
+            list_filter = {"creator_id": user_id}
+            if status:
+                list_filter["status"] = status
+            tables = await self.list(list_filter, skip=skip, limit=limit)
+            count = await self.count(list_filter)
+            return TableCountResponse(tables=tables, count=count)
+        except Exception as e:
+            raise DatabaseException(detail=f"Failed to list tables for user: {str(e)}")
+
+    async def list_invited(
+            self,
+            user_id: str,
+            status: Optional[str] = None,
+            skip: int = 0,
+            limit: int = 100
+    ) -> TableCountResponse:
+        """
+        List tables where user is a player. Optionally filter by status.
+
+        Args:
+            user_id: The ID of the user
+            status: Optional table status to filter by
+            skip: Number of tables to skip
+            limit: Maximum number of tables to return
+
+        Returns:
+            TableCountResponse: List and count of tables
+
+        Raises:
+            DatabaseException: If there's an error listing tables
+        """
+        try:
+            if not ObjectId.is_valid(user_id):
+                return []
+            list_filter = {"creator_id": {"$ne": user_id}, "players.user_id": user_id}
+            if status:
+                list_filter["status"] = status
+            tables = await self.list(list_filter, skip=skip, limit=limit)
+            count = await self.count(list_filter)
+            return TableCountResponse(tables=tables, count=count)
+        except Exception as e:
+            raise DatabaseException(detail=f"Failed to list tables for user: {str(e)}")
+
 
     async def invite_players(self, table_id: str, players: List[dict]) -> Optional[TableDBOutput]:
         """

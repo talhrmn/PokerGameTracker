@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, status, Body
 from app.api.dependencies import get_current_user, get_game_service, get_table_service
 from app.core.exceptions import ValidationException, NotFoundException, PermissionDeniedException
 from app.schemas.game import GameStatusEnum
-from app.schemas.table import TableUpdate, TableBase, PlayerStatusEnum, TableDBOutput
+from app.schemas.table import TableUpdate, TableBase, PlayerStatusEnum, TableDBOutput, TableCountResponse
 from app.schemas.user import UserResponse
 from app.services.game_service import GameService
 from app.services.table_service import TableService
@@ -57,6 +57,52 @@ async def get_tables(
     """
     return await table_service.get_tables(current_user, status, skip, limit)
 
+
+@router.get("/created", response_model=TableCountResponse)
+async def get_created_tables(
+        status: str = None,
+        limit: int = 10,
+        skip: int = 0,
+        current_user: UserResponse = Depends(get_current_user),
+        table_service: TableService = Depends(get_table_service)):
+    """
+    Get created tables for the current user.
+
+    Args:
+        status: Optional status to filter by
+        limit: Optional limit for pagination
+        skip: Optional skip for pagination
+        current_user: The current authenticated user
+        table_service: The table service
+
+    Returns:
+        List of tables
+    """
+    return await table_service.get_created_tables(current_user, status, skip, limit)
+
+
+@router.get("/invited", response_model=TableCountResponse)
+async def get_invited_tables(
+        status: str = None,
+        limit: int = 10,
+        skip: int = 0,
+        current_user: UserResponse = Depends(get_current_user),
+        table_service: TableService = Depends(get_table_service)
+):
+    """
+    Get invited tables for the current user.
+
+    Args:
+        status: Optional status to filter by
+        limit: Optional limit for pagination
+        skip: Optional skip for pagination
+        current_user: The current authenticated user
+        table_service: The table service
+
+    Returns:
+        List of tables
+    """
+    return await table_service.get_invited_tables(current_user, status, skip, limit)
 
 @router.get("/{table_id}", response_model=TableDBOutput)
 async def get_table(

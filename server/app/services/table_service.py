@@ -8,7 +8,7 @@ from app.core.exceptions import (
     PermissionDeniedException
 )
 from app.repositories.table_repository import TableRepository
-from app.schemas.table import TableBase, TableDBInput, TableDBOutput, PlayerStatusEnum, PlayerStatus
+from app.schemas.table import TableBase, TableDBInput, TableDBOutput, PlayerStatusEnum, PlayerStatus, TableCountResponse
 from app.schemas.user import UserResponse
 from app.services.base import BaseService
 
@@ -103,6 +103,91 @@ class TableService(BaseService[TableDBInput, TableDBOutput]):
             )
         except Exception as e:
             raise DatabaseException(detail=f"Failed to get tables: {str(e)}")
+
+    async def get_created_tables(
+            self,
+            current_user: UserResponse,
+            table_status: Optional[str] = None,
+            skip: int = 0,
+            limit: int = 100
+    ) -> TableCountResponse:
+        """
+        Get created tables where the current user is a player.
+
+        Args:
+            current_user: The user to get tables for
+            table_status: Optional status to filter by
+            skip: Number of records to skip
+            limit: Maximum number of records to return
+
+        Returns:
+            List[TableDBOutput]: List of tables matching the criteria
+
+        Raises:
+            DatabaseException: If there's an error fetching tables
+        """
+        try:
+            return await self.repository.list_created(
+                str(current_user.id),
+                status=table_status,
+                skip=skip,
+                limit=limit
+            )
+        except Exception as e:
+            raise DatabaseException(detail=f"Failed to get tables: {str(e)}")
+
+    async def get_invited_tables(
+            self,
+            current_user: UserResponse,
+            table_status: Optional[str] = None,
+            skip: int = 0,
+            limit: int = 100
+    ) -> TableCountResponse:
+        """
+        Get tables where the current user is a player.
+
+        Args:
+            current_user: The user to get tables for
+            table_status: Optional status to filter by
+            skip: Number of records to skip
+            limit: Maximum number of records to return
+
+        Returns:
+            List[TableDBOutput]: List of tables matching the criteria
+
+        Raises:
+            DatabaseException: If there's an error fetching tables
+        """
+        try:
+            return await self.repository.list_invited(
+                str(current_user.id),
+                status=table_status,
+                skip=skip,
+                limit=limit
+            )
+        except Exception as e:
+            raise DatabaseException(detail=f"Failed to get tables: {str(e)}")
+
+
+    async def count_tables_for_player(self, current_user: UserResponse) -> TableCountResponse:
+        """
+        Count total tables for a player.
+
+        Args:
+            current_user: The user to count tables for
+
+        Returns:
+            int: Total number of tables
+
+        Raises:
+            DatabaseException: If there's an error counting tables
+        """
+        try:
+            user_tables = await self.repository.count_created(str(current_user.id))
+            invited_tables = await self.repository.count_invited(str(current_user.id))
+            return TableCountResponse(created=user_tables, invited=invited_tables)
+        except Exception as e:
+            raise DatabaseException(detail=f"Failed to count tables for player: {str(e)}")
 
     async def update_table(self, table_id: str, update_data: Dict) -> Optional[TableDBOutput]:
         """

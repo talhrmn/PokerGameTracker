@@ -7,7 +7,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.core.exceptions import DatabaseException
 from app.repositories.base import BaseRepository
-from app.schemas.user import UserDBInput, UserDBOutput, UserStats, MonthlyStats
+from app.schemas.user import UserDBInput, UserDBOutput, UserStats, MonthlyStats, UserDBAuthOutput
 
 
 class UserRepository(BaseRepository[UserDBInput, UserDBOutput]):
@@ -36,6 +36,18 @@ class UserRepository(BaseRepository[UserDBInput, UserDBOutput]):
         super().__init__(db_client.users, UserDBInput, UserDBOutput)
         self.db_client = db_client
         self.logger = logging.getLogger(self.__class__.__name__)
+
+    async def get_auth_user(self, username: str) -> Optional[dict]:
+        """
+        Get a user auth details.
+
+        Args:
+            username: The username to search for
+
+        Returns:
+            Optional[UserDBAuthOutput]: The user if found, None otherwise
+        """
+        return await self.get_one_by_query({"username": username}, dump_model=False)
 
     async def get_by_username(self, username: str) -> Optional[UserDBOutput]:
         """

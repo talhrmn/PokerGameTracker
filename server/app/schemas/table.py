@@ -82,3 +82,8 @@ class TableDBOutput(TableDBInput):
         "arbitrary_types_allowed": True,
         "json_encoders": {PyObjectId: str}
     }
+
+
+class TableCountResponse(BaseModel):
+    tables: List[TableDBOutput]
+    count: int

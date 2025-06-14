@@ -70,3 +70,15 @@ class UserDBOutput(UserDBBase):
         "json_encoders": {PyObjectId: str},
         "extra": "ignore"
     }
+
+
+class UserDBAuthOutput(UserBase):
+    password_hash: str
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+
+    model_config = {
+        "populate_by_name": True,
+        "arbitrary_types_allowed": True,
+        "json_encoders": {PyObjectId: str},
+        "extra": "ignore"
+    }
