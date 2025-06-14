@@ -50,7 +50,7 @@ class UserUpdate(BaseModel):
 
 class UserDBBase(UserBase):
     profile_pic: Optional[str] = None
-    created_at: datetime = Field(default_factory=datetime.now(UTC))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     last_login: Optional[datetime] = None
     stats: UserStats = Field(default_factory=UserStats)
     monthly_stats: List[MonthlyStats] = []

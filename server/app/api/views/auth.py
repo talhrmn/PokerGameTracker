@@ -15,7 +15,7 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@router.post("/register", response_model=LoginResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/signup", response_model=LoginResponse, status_code=status.HTTP_201_CREATED)
 async def register_user(
         user_data: UserInput,
         user_service: UserService = Depends(get_user_service),
@@ -32,16 +32,6 @@ async def register_user(
     Returns:
         LoginResponse: Authentication token and type
     """
-    # Check for existing username
-    user = await user_service.get_user_by_username(user_data.username)
-    if user:
-        raise AuthenticationException(detail="Username already registered")
-
-    # Check for existing email
-    user = await user_service.get_user_by_email(str(user_data.email))
-    if user:
-        raise AuthenticationException(detail="Email already registered")
-
     # Create user and return auth token
     user = await user_service.create_user(user_data=user_data)
     return auth_service.login_user(user.id)

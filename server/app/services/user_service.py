@@ -8,7 +8,7 @@ from app.core.exceptions import (
     DatabaseException,
     DuplicateResourceException,
     NotFoundException,
-    ValidationException
+    ValidationException, AuthenticationException
 )
 from app.core.security import get_password_hash
 from app.repositories.user_repository import UserRepository
@@ -53,8 +53,10 @@ class UserService(BaseService[UserInput, UserDBOutput]):
         Returns:
             Optional[UserDBAuthOutput]: The user if found, None otherwise
         """
+        user = await self.repository.get_auth_user(username)
+        if not user:
+            raise AuthenticationException(detail="User does not exist, please sign up!")
         try:
-            user = await self.repository.get_auth_user(username)
             return UserDBAuthOutput(**user)
         except Exception as e:
             raise DatabaseException(detail=f"Failed to get user by username: {str(e)}")
